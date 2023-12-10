@@ -337,7 +337,7 @@ my $file_name = '' ;
 
 my $file_chooser = Gtk3::FileChooserDialog->new 
 			(
-			$title, undef, $mode,
+			$title, undef, $mode // $title,
 			'gtk-cancel' => 'cancel', 'gtk-ok' => 'ok'
 			);
 
