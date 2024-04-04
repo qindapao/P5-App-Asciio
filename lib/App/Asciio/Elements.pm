@@ -300,9 +300,7 @@ for my $element (@elements)
 		}
 	
 	$self->{MODIFIED }++ ;
-	delete $element->{CACHE}{COORDINATES} ;
-	delete $element->{CACHE}{COORDINATES_BOUNDARIES};
-	delete $element->{CACHE}{GLYPHS} ;
+	delete $element->{CACHE}{ZBUFFER} ;
 	}
 }
 
@@ -619,8 +617,11 @@ my $search_words = $self->display_edit_dialog("input search words", '', $self, u
 
 for my $element (@{$self->{ELEMENTS}}) 
 	{
-	my $element_zbuffer = App::Asciio::ZBuffer->new(0, $element) ;
-	my ($text, $min_x, $min_y, $width, $height) = $self->get_text_rectangle($element_zbuffer->{coordinates}) ;
+	unless(exists $element->{CACHE}{ZBUFFER}{ELEMENT})
+		{
+		my $element->{CACHE}{ZBUFFER}{ELEMENT} = App::Asciio::ZBuffer->new(0, $element) ;
+		}
+	my ($text, $min_x, $min_y, $width, $height) = $self->get_text_rectangle($element->{CACHE}{ZBUFFER}{ELEMENT}->{coordinates}) ;
 
 	$self->select_elements(1, $element) if ($text =~ m/$search_words/i);
 	}
@@ -636,8 +637,11 @@ my $search_words = $self->display_edit_dialog("input search words", '', $self, u
 
 for my $element (@{$self->{ELEMENTS}}) 
 	{
-	my $element_zbuffer = App::Asciio::ZBuffer->new(0, $element) ;
-	my ($text, $min_x, $min_y, $width, $height) = $self->get_text_rectangle($element_zbuffer->{coordinates}) ;
+	unless(exists $element->{CACHE}{ZBUFFER}{ELEMENT})
+		{
+		my $element->{CACHE}{ZBUFFER}{ELEMENT} = App::Asciio::ZBuffer->new(0, $element) ;
+		}
+	my ($text, $min_x, $min_y, $width, $height) = $self->get_text_rectangle($element->{CACHE}{ZBUFFER}{ELEMENT}->{coordinates}) ;
 
 	$element->{SELECTED} = ++$self->{SELECTION_INDEX} if ($text =~ m/$search_words/i);
 	}
@@ -693,12 +697,12 @@ my ($self, $element, $x, $y, $field) = @_ ;
 $field //= 0 ;
 my $is_under = 0 ;
 
-if(exists $element->{CACHE}{COORDINATES_BOUNDARIES})
+if(exists $element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES})
 	{
-	if(($element->{CACHE}{COORDINATES_BOUNDARIES}->[0] > $x + $field)
-		|| ($element->{CACHE}{COORDINATES_BOUNDARIES}->[1] + 2 <= $x - $field)
-		|| ($element->{CACHE}{COORDINATES_BOUNDARIES}->[2] > $y + $field)
-		|| ($element->{CACHE}{COORDINATES_BOUNDARIES}->[3] + 2 <= $y - $field))
+	if(($element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES}->[2] > $y + $field)
+		|| ($element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES}->[3] + 2 <= $y - $field)
+		|| ($element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES}->[0] > $x + $field)
+		|| ($element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES}->[1] + 2 <= $x - $field))
 		{
 		return $is_under ;
 		}
