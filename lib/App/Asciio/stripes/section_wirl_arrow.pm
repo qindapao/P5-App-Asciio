@@ -1053,10 +1053,10 @@ my $is_under = 0 ;
 
 if(exists $element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES})
 	{
-	if(($element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES}->[2] > $y + $field)
-		|| ($element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES}->[3] + 2 <= $y - $field)
-		|| ($element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES}->[0] > $x + $field)
-		|| ($element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES}->[1] + 2 <= $x - $field))
+	if(($element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES}{min_y} > $y + $field)
+		|| ($element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES}{max_y} + 2 <= $y - $field)
+		|| ($element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES}{min_x} > $x + $field)
+		|| ($element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES}{max_x} + 2 <= $x - $field))
 		{
 		return $is_under ;
 		}

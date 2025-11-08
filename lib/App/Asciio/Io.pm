@@ -109,16 +109,16 @@ return ($title, $asciio) ;
 Readonly my  @ELEMENTS_TO_KEEP_AWAY_FROM_CURRENT_OBJECT => 
 	qw
 		(
-		widget
-		root_window
-		sc_window
-		notebook
-		label
-		asciios
-		asciio_argv
-		event_handlers
-		is_need_focus_in
-		seen_elements
+		WIDGET
+		ROOT_WINDOW
+		SC_WINDOW
+		NOTEBOOK
+		LABEL
+		ASCIIOS
+		ASCIIO_ARGV
+		EVENT_HANDLERS
+		IS_NEED_FOCUS_IN
+		SEEN_ELEMENTS
 		format_painter
 		ACTIONS CURRENT_ACTIONS ACTIONS_BY_NAME
 		HOOKS IMPORT_EXPORT_HANDLERS
@@ -167,7 +167,7 @@ for my $asciio (@asciios)
 	
 	my $deserialization_self = (ref($new_self) eq 'ARRAY') ? $decoder->decode($asciio) : $asciio ;
 	$new_asciio->load_self($deserialization_self);
-	push @{$self->{asciios}}, $new_asciio ;
+	push @{$self->{ASCIIOS}}, $new_asciio ;
 	}
 return $self ;
 }
@@ -280,7 +280,7 @@ my ($self) = @_ ;
 my $all_serialize_str ;
 my $asciios ;
 
-foreach my $asciio (@{$self->{asciios}})
+foreach my $asciio (@{$self->{ASCIIOS}})
 	{
 	push @{$asciios}, $asciio->serialize_self() ;
 	}
@@ -298,16 +298,16 @@ sub serialize_self
 {
 my ($self, $indent) = @_ ;
 
-local $self->{widget} = undef ;
-local $self->{root_window} = undef ;
-local $self->{sc_window} = undef ;
-local $self->{notebook} = undef ;
-local $self->{asciios} = undef ;
-local $self->{label} = undef ;
-local $self->{event_handlers} = undef ;
-local $self->{asciio_argv} = undef ;
-local $self->{is_need_focus_in} = undef ;
-local $self->{seen_elements} = undef ;
+local $self->{WIDGET} = undef ;
+local $self->{ROOT_WINDOW} = undef ;
+local $self->{SC_WINDOW} = undef ;
+local $self->{NOTEBOOK} = undef ;
+local $self->{ASCIIOS} = undef ;
+local $self->{LABEL} = undef ;
+local $self->{EVENT_HANDLERS} = undef ;
+local $self->{ASCIIO_ARGV} = undef ;
+local $self->{IS_NEED_FOCUS_IN} = undef ;
+local $self->{SEEN_ELEMENTS} = undef ;
 local $self->{format_painter} = undef ;
 local $self->{ACTIONS} = [] ;
 local $self->{HOOKS} = [] ;
@@ -382,7 +382,7 @@ else
 		}
 		
 	$title = $file_name ;
-	write_file($file_name, $ASCIIO_MIME_TYPE . compress($self->serialize_self() .'$VAR1 ;')) or $title = undef ;
+	write_file($file_name, $ASCIIO_MIME_TYPE . compress($self->serialize_all_self() .'$VAR1 ;')) or $title = undef ;
 	}
 	
 return $title ;

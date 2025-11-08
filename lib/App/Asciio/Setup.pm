@@ -155,7 +155,7 @@ for my $action_file (@{ $action_files })
 	
 	my (%action_handlers, $remove_old_shortcuts) ;
 	
-	if($action_file =~ /^$asciio_setup_path/)
+	if($action_file =~ /^\Q$asciio_setup_path\E/)
 		{
 		$setup_path = $asciio_setup_path ;
 		substr($action_file, 0, length("$asciio_setup_path/")) = '' 
@@ -495,15 +495,14 @@ sub setup_mouse_cursors
 {
 my ($self, $setup_path, $mouse_cursor_files) = @_ ;
 
-$self->{CUSTOM_MOUSE_CURSORS} //= {} ;
-
-while (my ($key, $value) = each %{$mouse_cursor_files}) 
+$self->{CUSTOM_MOUSE_CURSORS} =
 	{
-	$self->{CUSTOM_MOUSE_CURSORS}{$key} = "$setup_path/$value"
-	}
+	map 
+		{
+		$_ => "$setup_path/" . $mouse_cursor_files->{$_}
+		} keys %$mouse_cursor_files
+	} ;
 }
-
-
 
 #------------------------------------------------------------------------------------------------------
 

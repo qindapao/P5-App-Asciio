@@ -57,7 +57,7 @@ if(defined $asciio_config->{TARGETS}[0])
 	$window->set_default_size(@{$asciio->{WINDOW_SIZE}})  if defined $asciio->{WINDOW_SIZE} ;
 	}
 
-$asciio->{widget}->set_size_request($asciio->{CANVAS_WIDTH} * $character_width, $asciio->{CANVAS_HEIGHT} * $character_height);
+$asciio->{WIDGET}->set_size_request($asciio->{CANVAS_WIDTH} * $character_width, $asciio->{CANVAS_HEIGHT} * $character_height);
 $asciio->set_modified_state(0) ;
 
 if(defined $asciio_config->{SCRIPT})
@@ -68,7 +68,7 @@ if(defined $asciio_config->{SCRIPT})
 	}
 
 $window->show_all() ;
-$asciio->{widget}->grab_focus() ;
+$asciio->{WIDGET}->grab_focus() ;
 return ($asciio, $asciio_config->{WEB_PORT}) ;
 }
 

@@ -37,7 +37,7 @@ then the steps are as follows:
 5. update drawing.
 
 # Detailed steps
-## 1 Find the cross point
+## Find the cross point
 
 The cross point must be the coverage of characters, 
 and the characters that cover each other are the characters we care about.
@@ -66,9 +66,9 @@ because they absolutely determine what kind of cross point is generated.
 diagonal crossing, you also need to record characters at 45 degrees, 
 135 degrees, 225 degrees, and 315 degrees.
 
-## 2 Judgment scene
+## Judgment scene
 
-### 2.1 General situation
+### General situation
 
 First of all, all cross characters are directional, we need to group 
 them by direction and type.
@@ -135,7 +135,7 @@ For the `╤` sign, the condition for its appearance is that:
 Pay attention to the bold part above, because if this condition is true, 
 then the filling character should be `╪`, not `╤`.
 
-### 2.2 Improve efficiency
+### Improve efficiency
 
 There is no need to perform calculations every time to determine the characters 
 filled in the middle. Whenever a new scene calculation occurs, we can save the 
@@ -146,7 +146,7 @@ A hash table is most suitable for this, and the hash key can use a combination
 of upper, lower, left, and right characters(The oblique lines are the four diagonal 
 directions.).
 
-### 2.3 An additional case needs to be considered separately
+### An additional case needs to be considered separately
 
 ```
    ││
@@ -183,7 +183,7 @@ and background characters of the cross point all need to be recorded.In fact,
 there may be more than one character that meets the condition in the background, 
 so all of these characters need to be considered, not just limited to 2 characters.
 
-### 2.4 The case of character coverage
+### The case of character coverage
 
 There is another situation that needs to be explained separately,Similar to 
 above but slightly different
@@ -220,7 +220,7 @@ characters are considered.
 >The definition of the cross point has already been mentioned in the 
 previous chapter
 
-### 2.5 A method to simplify logical judgment
+### A method to simplify logical judgment
 
 When we determine what characters should be filled in a point, we first consider 
 the characters in the four directions. Then after these characters are considered, 

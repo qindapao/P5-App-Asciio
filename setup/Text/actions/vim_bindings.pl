@@ -407,12 +407,14 @@ register_action_handlers_remove_old_shortcuts
 
 '<< eraser leader >>' =>
 	{
-	SHORTCUTS   => '00S-E',
-	ENTER_GROUP => \&App::Asciio::Actions::Eraser::eraser_enter,
-	ESCAPE_KEYS => '000-Escape',
+	SHORTCUTS   => 'not_set',
+	ENTER_GROUP => 'not_set',
+	ESCAPE_KEYS => 'not_set',
 	
-	'Eraser escape'                           => ['Escape'],
-	'Eraser motion'                           => ['000-motion_notify'],
+	'Eraser escape'  => ['not_set'],
+	'Eraser motion'  => ['not_set'],
+	'Eraser delete'  => [ 'not_set'],
+	'Eraser delete2' => [ 'not_set'],
 	},
 
 '<< clone leader >>' =>

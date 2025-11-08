@@ -23,7 +23,7 @@ sub setup_dnd
 {
 my ($self, $window)  = @_ ; 
 
-$window = $self->{widget} ;
+$window = $self->{WIDGET} ;
 
 my @targets=
 	(
@@ -67,7 +67,7 @@ else
 	$data->set_text($self->transform_elements_to_ascii_buffer($self->get_selected_elements(1)), -1) ;
 	}
 
-$self->{widget}->drag_source_unset ;
+$self->{WIDGET}->drag_source_unset ;
 }
 
 #--------------------------------------------------------------------------
@@ -181,8 +181,8 @@ my @targets=
 	Gtk3::TargetEntry->new( 'text/plain', 0, 1 ),
 	) ;
 
-$self->{widget}->drag_source_set(['button1_mask', 'button3_mask'], \@targets, ['copy','move']) ;
-$self->{widget}->drag_begin_with_coordinates
+$self->{WIDGET}->drag_source_set(['button1_mask', 'button3_mask'], \@targets, ['copy','move']) ;
+$self->{WIDGET}->drag_begin_with_coordinates
 	(
 	$target_list,
 	'copy', # actions

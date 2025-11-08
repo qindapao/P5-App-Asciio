@@ -19,6 +19,12 @@ Readonly my $DEFAULT_BOX_TYPE =>
 	[1, 'fill-character','',     ' ', '',    1, ] ,
 ] ;
 
+use constant
+	{
+    RHOMBUS_TYPE_FILL_ROW_INDEX     => 5,
+    RHOMBUS_TYPE_FILL_CHAR_POSITION => 3,
+	} ;
+
 use App::Asciio::String ;
 
 #-----------------------------------------------------------------------------
@@ -81,11 +87,12 @@ my ($self, $text_only, $end_x, $end_y, $editable, $resizable, $box_type, $auto_s
 Readonly my $mini_row => 3 ; 
 
 my $fill_char = ' ';
+my $fill_value = $box_type->[RHOMBUS_TYPE_FILL_ROW_INDEX][RHOMBUS_TYPE_FILL_CHAR_POSITION];
 
-if(defined $box_type->[5][3] && $box_type->[5][3] ne '')
-{
-    $fill_char = substr($box_type->[5][3], 0, 1);
-}
+if(defined $fill_value && $fill_value ne '')
+	{
+    $fill_char = substr($fill_value, 0, 1);
+	}
 $end_y = -5 if $auto_shrink ;
 
 # $number_of_lines must be odd

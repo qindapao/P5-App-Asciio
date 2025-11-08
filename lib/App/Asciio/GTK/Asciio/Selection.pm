@@ -112,18 +112,21 @@ my ($self, $select_type) = @_ ;
 my @elements_to_be_selected ;
 my @elements_to_be_inverse_selected ;
 
-for my $element (@{$self->{seen_elements}})
+for my $element (@{$self->{SEEN_ELEMENTS}})
 	{
+	
+	next if(ref($element) =~ /arrow/ && !$self->{DRAG_SELECTS_ARROWS}) ;
+	
 	if(exists $element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES})
 		{
 		my $coordinates_extremun = $element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES} ;
 		my @x = map {$_->[0]} @{$self->{SELECTION_POLYGON}} ;
 		my @y = map {$_->[1]} @{$self->{SELECTION_POLYGON}} ;
 		my @polygon_extremum = (min(@x), max(@x), min(@y), max(@y)) ;
-		if	   (($polygon_extremum[1] < $coordinates_extremun->[0]) 
-			|| ($polygon_extremum[0] > $coordinates_extremun->[1])
-			|| ($polygon_extremum[3] < $coordinates_extremun->[2])
-			|| ($polygon_extremum[2] > $coordinates_extremun->[3]))
+		if	   (($polygon_extremum[1] < $coordinates_extremun->{min_x}) 
+			|| ($polygon_extremum[0] > $coordinates_extremun->{max_x})
+			|| ($polygon_extremum[3] < $coordinates_extremun->{min_y})
+			|| ($polygon_extremum[2] > $coordinates_extremun->{max_y}))
 			{
 			if(exists($elements_selection_status{$element}))
 				{

@@ -11,7 +11,6 @@ use App::Asciio::Actions::Colors ;
 use App::Asciio::Actions::Debug ;
 use App::Asciio::Actions::Elements ;
 use App::Asciio::Actions::ElementsManipulation ;
-use App::Asciio::Actions::Eraser ;
 use App::Asciio::Actions::File ;
 use App::Asciio::Actions::Git ;
 use App::Asciio::Actions::Mouse ;
@@ -110,7 +109,7 @@ register_action_handlers
 
 'Mouse emulation left-click'         => [['000-odiaeresis', '000-space'],          \&App::Asciio::Actions::Mouse::mouse_left_click                                     ],
 'Mouse emulation expand selection'   => ['00S-Odiaeresis',                         \&App::Asciio::Actions::Mouse::expand_selection                                     ],
-'Mouse emulation selection flip'     => [['C00-odiaeresis', '000-1'],              \&App::Asciio::Actions::Mouse::mouse_element_selection_flip                         ],
+'Mouse emulation selection flip'     => [['C00-odiaeresis'],                       \&App::Asciio::Actions::Mouse::mouse_element_selection_flip                         ],
 
 'Mouse emulation right-click'        => ['000-adiaeresis',                         \&App::Asciio::Actions::Mouse::mouse_right_click                                    ],
 
@@ -140,7 +139,6 @@ register_action_handlers
 	{
 	SHORTCUTS   => '000-y',
 	
-	'Copy to clipboard'                      => ['000-y', \&App::Asciio::Actions::Clipboard::export_elements_to_system_clipboard],
 	'Export to clipboard & primary as ascii' => ['00S-Y', \&App::Asciio::Actions::Clipboard::export_to_clipboard_as_ascii       ],
 	'Export to clipboard & primary as markup'=> ['000-m', \&App::Asciio::Actions::Clipboard::export_to_clipboard_as_markup      ],
 	},
@@ -149,7 +147,6 @@ register_action_handlers
 	{
 	SHORTCUTS   => '000-p',
 
-	'Insert from clipboard'              => ['000-p', \&App::Asciio::Actions::Clipboard::import_elements_from_system_clipboard       ],
 	'Import from primary to box'         => ['00S-P', \&App::Asciio::Actions::Clipboard::import_from_primary_to_box                  ],
 	'Import from primary to text'        => ['0A0-p', \&App::Asciio::Actions::Clipboard::import_from_primary_to_text                 ],
 	'Import from clipboard to box'       => ['000-b', \&App::Asciio::Actions::Clipboard::import_from_clipboard_to_box                ],
@@ -213,7 +210,7 @@ register_action_handlers
 	'Change elements foreground color'    => ['000-f', \&App::Asciio::Actions::Colors::change_elements_colors, 0       ],
 	'Change elements background color'    => ['000-b', \&App::Asciio::Actions::Colors::change_elements_colors, 1       ],
 
-	'Change Asciio background color'      => ['000-B', \&App::Asciio::Actions::Colors::change_background_color         ],
+	'Change Asciio background color'      => ['00S-B', \&App::Asciio::Actions::Colors::change_background_color         ],
 	'Change grid color'                   => ['000-g', \&App::Asciio::Actions::Colors::change_grid_color               ],
 	},
 
@@ -276,7 +273,6 @@ register_action_handlers
 	'Run external script'                 => ['00S-exclam', \&App::Asciio::Utils::Scripting::run_external_script            ],
 	
 	'Open'                                => ['000-e', \&App::Asciio::Actions::File::open                                   ],
-	'Save'                                => ['000-w', \&App::Asciio::Actions::File::save, undef                            ],
 	'SaveAs'                              => ['00S-W', \&App::Asciio::Actions::File::save, 'as'                             ],
 	'Insert'                              => ['000-r', \&App::Asciio::Actions::File::insert                                 ],
 	'Quit'                                => ['000-q', \&App::Asciio::Actions::File::quit                                   ],
@@ -401,7 +397,7 @@ register_action_handlers
 	
 	'Add unicode no-connect line'           => ['000-k', \&App::Asciio::Actions::Elements::add_non_connecting_line, 1                          ],
 	'Add unicode no-connect bold line'      => ['00S-K', \&App::Asciio::Actions::Elements::add_non_connecting_line, 2                          ],
-	'Add unicode no-connect double line'    => ['0A0-K', \&App::Asciio::Actions::Elements::add_non_connecting_line, 3                          ],
+	'Add unicode no-connect double line'    => ['0A0-k', \&App::Asciio::Actions::Elements::add_non_connecting_line, 3                          ],
 	'Add unicode no-connect imaginary line' => ['00S-I', \&App::Asciio::Actions::Elements::add_non_connecting_line, 4                          ],
 	},
 

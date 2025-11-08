@@ -57,7 +57,7 @@ $self->{UI} = 'GUI' ;
 bless $self, $class ;
 
 $self->{SCROLL_BAR_POSITION} = [0, 0] ;
-$self->{asciio_argv} = Clone::clone($asciio_argv) ;
+$self->{ASCIIO_ARGV} = Clone::clone($asciio_argv) ;
 
 my $label_num ;
 if(defined $old_self)
@@ -93,11 +93,11 @@ $scwin->add_events(['GDK_SCROLL_MASK']) ;
 
 $self->connect_event('scroll_event', 'scroll_event', \&mouse_scroll_event, $scwin) ;
 
-$self->{widget}      = $drawing_area ;
-$self->{root_window} = $window ;
-$self->{sc_window}   = $scwin ;
-$self->{notebook}    = $notebook ;
-$self->{label}       = $label ;
+$self->{WIDGET}      = $drawing_area ;
+$self->{ROOT_WINDOW} = $window ;
+$self->{SC_WINDOW}   = $scwin ;
+$self->{NOTEBOOK}    = $notebook ;
+$self->{LABEL}       = $label ;
 
 $self->connect_event('draw', 'draw', \&expose_event, $drawing_area) ;
 
@@ -121,7 +121,7 @@ $notebook->append_page($scwin, $label);
 $notebook->set_show_tabs(TRUE) ;
 
 my ($command_line_switch_parse_ok, $command_line_parse_message, $asciio_config)
-	= $self->ParseSwitches([@{$self->{asciio_argv}}], 0) ;
+	= $self->ParseSwitches([@{$self->{ASCIIO_ARGV}}], 0) ;
 
 die "Error: '$command_line_parse_message'!" unless $command_line_switch_parse_ok ;
 
@@ -160,12 +160,12 @@ $self->setup($setup_paths, \%object_override) ;
 
 my ($character_width, $character_height) = $self->get_character_size() ;
 
-$self->{widget}->set_size_request($self->{CANVAS_WIDTH} * $character_width, $self->{CANVAS_HEIGHT} * $character_height);
+$self->{WIDGET}->set_size_request($self->{CANVAS_WIDTH} * $character_width, $self->{CANVAS_HEIGHT} * $character_height);
 $self->set_modified_state(0) ;
 
 $self->setup_dnd($window) ;
 
-push @{$self->{asciios}}, $self ;
+push @{$self->{ASCIIOS}}, $self ;
 
 $self->connect_event('switch-page',    'switch-page',    \&page_switch_event, $notebook) ;
 $self->connect_event('focus_in_event', 'focus_in_event', \&focus_in_event,    $drawing_area) ;
@@ -178,7 +178,7 @@ return($self) ;
 sub connect_event 
 	{
 	my ($self, $event_name, $gtk_event_name, $handler, $widget) = @_;
-	$self->{event_handlers}{$event_name} =
+	$self->{EVENT_HANDLERS}{$event_name} =
 		{
 		handler_id => $widget->signal_connect($gtk_event_name => $handler, $self),
 		handler_widget => $widget
@@ -203,11 +203,11 @@ my $answer = 'yes';
 
 my $should_save ;
 
-my $current_page_num = $self->{notebook}->get_current_page() ;
+my $current_page_num = $self->{NOTEBOOK}->get_current_page() ;
 
 return if($self->{TAB_LABEL_NUM} != $current_page_num) ;
 
-for my $asciio (@{$self->{asciios}})
+for my $asciio (@{$self->{ASCIIOS}})
 	{
 	$should_save++ if $asciio->get_modified_state() ;
 	}
@@ -232,7 +232,7 @@ sub get_new_tab_num
 {
 my ($self) = @_ ;
 
-return (defined $self->{asciios}) ? @{$self->{asciios}} : 0 ;
+return (defined $self->{ASCIIOS}) ? @{$self->{ASCIIOS}} : 0 ;
 }
 
 #-----------------------------------------------------------------------------
@@ -242,14 +242,14 @@ sub add_tab
 my ($self) = @_ ;
 
 # get the current active tab index
-my $current_page = $self->{notebook}->get_current_page();
+my $current_page = $self->{NOTEBOOK}->get_current_page();
 
 
-my $new_asciio = new App::Asciio::GTK::Asciio($self->{root_window}, 50, 25, $self->{notebook}, $self, $self->{asciio_argv}) ;
+my $new_asciio = new App::Asciio::GTK::Asciio($self->{ROOT_WINDOW}, 50, 25, $self->{NOTEBOOK}, $self, $self->{ASCIIO_ARGV}) ;
 
 # move the new tab to after the current active tab
-$new_asciio->{notebook}->reorder_child($new_asciio->{notebook}->get_nth_page(-1), $current_page + 1);
-splice(@{$self->{asciios}}, $current_page + 1, 0, $new_asciio) ;
+$new_asciio->{NOTEBOOK}->reorder_child($new_asciio->{NOTEBOOK}->get_nth_page(-1), $current_page + 1);
+splice(@{$self->{ASCIIOS}}, $current_page + 1, 0, $new_asciio) ;
 $self->update_all_asciios_ref() ;
 
 $new_asciio->set_modified_state(1) ;
@@ -257,9 +257,9 @@ $new_asciio->set_modified_state(1) ;
 $new_asciio->set_title($self->{TITLE}) ;
 
 # make the new tab the active tab
-$new_asciio->{notebook}->set_current_page($current_page + 1) ;
+$new_asciio->{NOTEBOOK}->set_current_page($current_page + 1) ;
 
-$new_asciio->{root_window}->show_all() ;
+$new_asciio->{ROOT_WINDOW}->show_all() ;
 
 $new_asciio->update_display() ;
 
@@ -292,9 +292,9 @@ my ($self) = @_ ;
 
 my $label_cnt = 0 ;
 
-for my $asciio (@{$self->{asciios}})
+for my $asciio (@{$self->{ASCIIOS}})
 	{
-	@{$asciio->{asciios}} = @{$self->{asciios}} ;
+	@{$asciio->{ASCIIOS}} = @{$self->{ASCIIOS}} ;
 	$asciio->{TAB_LABEL_NUM} = $label_cnt++ ;
 	}
 
@@ -308,10 +308,10 @@ sub disable_all_switch_focus_event
 {
 my ($self) = @_ ;
 
-for my $asciio (@{$self->{asciios}})
+for my $asciio (@{$self->{ASCIIOS}})
 	{
-	$asciio->{notebook}->signal_handler_disconnect($asciio->{event_handlers}{"switch-page"}{handler_id}) ;
-	$asciio->{widget}->signal_handler_disconnect($asciio->{event_handlers}{"focus_in_event"}{handler_id}) ;
+	$asciio->{NOTEBOOK}->signal_handler_disconnect($asciio->{EVENT_HANDLERS}{"switch-page"}{handler_id}) ;
+	$asciio->{WIDGET}->signal_handler_disconnect($asciio->{EVENT_HANDLERS}{"focus_in_event"}{handler_id}) ;
 	}
 }
 
@@ -321,10 +321,10 @@ sub enable_all_switch_focus_event
 {
 my ($self) = @_ ;
 
-for my $asciio (@{$self->{asciios}})
+for my $asciio (@{$self->{ASCIIOS}})
 	{
-	$asciio->connect_event('switch-page', 'switch-page', \&page_switch_event, $asciio->{notebook}) ;
-	$asciio->connect_event('focus_in_event', 'focus_in_event', \&focus_in_event, $asciio->{widget}) ;
+	$asciio->connect_event('switch-page', 'switch-page', \&page_switch_event, $asciio->{NOTEBOOK}) ;
+	$asciio->connect_event('focus_in_event', 'focus_in_event', \&focus_in_event, $asciio->{WIDGET}) ;
 	}
 }
 
@@ -334,9 +334,9 @@ sub disconnect_all_events
 {
 my ($self) = @_ ;
 
-foreach my $event_key (keys %{$self->{event_handlers}})
+foreach my $event_key (keys %{$self->{EVENT_HANDLERS}})
 	{
-	my $event = $self->{event_handlers}{$event_key};
+	my $event = $self->{EVENT_HANDLERS}{$event_key};
 	$event->{handler_widget}->signal_handler_disconnect($event->{handler_id}) ;
 	}
 }
@@ -348,7 +348,7 @@ sub delete_tab
 my ($self, $is_delete_without_warning) = @_ ;
 
 # if there is only one tab left and deletion is not allowed
-my $total_pages = $self->{notebook}->get_n_pages();
+my $total_pages = $self->{NOTEBOOK}->get_n_pages();
 
 return if($total_pages == 1) ;
 
@@ -358,26 +358,26 @@ unless($is_delete_without_warning)
     return if($user_answer ne 'yes') ;
     }
 
-my $page_num = $self->{notebook}->get_current_page();
+my $page_num = $self->{NOTEBOOK}->get_current_page();
 
 $self->disconnect_all_events() ;
 
 my $next_asciio = $self->switch_tab(1) ;
 
-@{$self->{asciios}} = () ;
+@{$self->{ASCIIOS}} = () ;
 
-my $current_page = $next_asciio->{notebook}->get_nth_page($page_num) ;
-$next_asciio->{notebook}->remove_page($page_num) ;
+my $current_page = $next_asciio->{NOTEBOOK}->get_nth_page($page_num) ;
+$next_asciio->{NOTEBOOK}->remove_page($page_num) ;
 
 $current_page->destroy() ;
 
-splice(@{$next_asciio->{asciios}}, $page_num, 1) ;
+splice(@{$next_asciio->{ASCIIOS}}, $page_num, 1) ;
 
 $next_asciio->update_all_asciios_ref() ;
 
 $next_asciio->set_modified_state(1) ;
 
-$next_asciio->{root_window}->show_all() ;
+$next_asciio->{ROOT_WINDOW}->show_all() ;
 
 return $next_asciio ;
 }
@@ -388,14 +388,14 @@ sub change_current_tab_lable_name
 {
 my ($self, $tab_name) = @_ ;
 
-my $current_page_index = $self->{notebook}->get_current_page();
-my $current_page = $self->{notebook}->get_nth_page($current_page_index);
+my $current_page_index = $self->{NOTEBOOK}->get_current_page();
+my $current_page = $self->{NOTEBOOK}->get_nth_page($current_page_index);
 
 my $new_tab_lable_name = (defined $tab_name) ? $tab_name : $self->display_edit_dialog("input a new name", '', $self, undef, undef, undef, undef, 300, 100);
 
 if($new_tab_lable_name ne '')
 	{
-	$self->{label}->set_text($new_tab_lable_name) ;
+	$self->{LABEL}->set_text($new_tab_lable_name) ;
 	$self->{TAB_LABEL_NAME} = $new_tab_lable_name ;
 	}
 }
@@ -406,10 +406,10 @@ sub get_tab_label_height
 {
 my ($self) = @_ ;
 my $height = 0 ;
-if ($self->{notebook}->get_show_tabs())
+if ($self->{NOTEBOOK}->get_show_tabs())
 	{
-	my $page_num = $self->{notebook}->get_current_page();
-	my $tab_label = $self->{notebook}->get_tab_label($self->{notebook}->get_nth_page($page_num));
+	my $page_num = $self->{NOTEBOOK}->get_current_page();
+	my $tab_label = $self->{NOTEBOOK}->get_tab_label($self->{NOTEBOOK}->get_nth_page($page_num));
 	my $allocation = $tab_label->get_allocation();
 	$height = $allocation->{height} + $allocation->{y} ;
 	}
@@ -422,7 +422,7 @@ sub show_all_tabs
 {
 my ($self) = @_ ;
 
-$self->{notebook}->set_show_tabs(TRUE) ;
+$self->{NOTEBOOK}->set_show_tabs(TRUE) ;
 $self->set_label_focus(FALSE) ;
 }
 
@@ -432,7 +432,7 @@ sub hide_all_tabs
 {
 my ($self) = @_ ;
 
-$self->{notebook}->set_show_tabs(FALSE) ;
+$self->{NOTEBOOK}->set_show_tabs(FALSE) ;
 $self->set_label_focus(FALSE) ;
 }
 
@@ -442,17 +442,17 @@ sub set_label_focus
 {
 my ($self, $is_focus) = @_ ;
 
-$self->{notebook}->set_can_focus(FALSE) ;
-$self->{notebook}->set_scrollable(TRUE) ;
+$self->{NOTEBOOK}->set_can_focus(FALSE) ;
+$self->{NOTEBOOK}->set_scrollable(TRUE) ;
 
-for my $asciio (@{$self->{asciios}})
+for my $asciio (@{$self->{ASCIIOS}})
 	{
-	my $current_page_index = $asciio->{notebook}->get_current_page();
-	my $current_page = $asciio->{notebook}->get_nth_page($current_page_index);
-	my $label = $asciio->{notebook}->get_tab_label($current_page);
+	my $current_page_index = $asciio->{NOTEBOOK}->get_current_page();
+	my $current_page = $asciio->{NOTEBOOK}->get_nth_page($current_page_index);
+	my $label = $asciio->{NOTEBOOK}->get_tab_label($current_page);
 
 	$label->set_can_focus($is_focus);
-	$asciio->{widget}->set_can_focus(TRUE);
+	$asciio->{WIDGET}->set_can_focus(TRUE);
 	}
 }
 
@@ -462,11 +462,11 @@ sub switch_specific_tab
 {
 my ($self, $tab_label_num) = @_ ;
 
-my $total_pages = $self->{notebook}->get_n_pages();
-my $page_num = $self->{notebook}->get_current_page();
+my $total_pages = $self->{NOTEBOOK}->get_n_pages();
+my $page_num = $self->{NOTEBOOK}->get_current_page();
 
-$self->{notebook}->set_current_page($tab_label_num) ;
-return $self->{asciios}[$tab_label_num] ;
+$self->{NOTEBOOK}->set_current_page($tab_label_num) ;
+return $self->{ASCIIOS}[$tab_label_num] ;
 }
 
 #-----------------------------------------------------------------------------
@@ -475,11 +475,11 @@ sub switch_tab
 {
 my ($self, $step) = @_ ;
 
-my $total_pages = $self->{notebook}->get_n_pages();
-my $page_num = $self->{notebook}->get_current_page();
+my $total_pages = $self->{NOTEBOOK}->get_n_pages();
+my $page_num = $self->{NOTEBOOK}->get_current_page();
 
-$self->{notebook}->set_current_page(($page_num + $step) % $total_pages) ;
-return $self->{asciios}[($page_num + $step) % $total_pages] ;
+$self->{NOTEBOOK}->set_current_page(($page_num + $step) % $total_pages) ;
+return $self->{ASCIIOS}[($page_num + $step) % $total_pages] ;
 }
 
 #-----------------------------------------------------------------------------
@@ -503,7 +503,7 @@ sub destroy
 {
 my ($self) = @_;
 
-$self->{root_window}->destroy() ;
+$self->{ROOT_WINDOW}->destroy() ;
 }
 
 #-----------------------------------------------------------------------------
@@ -526,7 +526,7 @@ $self->SUPER::set_title($title) ;
 
 if(defined $title)
 	{
-	$self->{root_window}->set_title($self->{MODIFIED} 
+	$self->{ROOT_WINDOW}->set_title($self->{MODIFIED} 
 												? '* ' . $title . ' - asciio' 
 												: $title . ' - asciio') ;
 	}
@@ -562,7 +562,7 @@ if (!$self->{NO_UPDATE_DISPLAY})
 	{
 	$self->SUPER::update_display() ;
 
-	my $widget = $self->{widget} ;
+	my $widget = $self->{WIDGET} ;
 	$widget->queue_draw_area(0, 0, $widget->get_allocated_width, $widget->get_allocated_height);
 	}
 }
@@ -590,8 +590,8 @@ my ($widget_width, $widget_height) = ($widget->get_allocated_width(), $widget->g
 # 	print STDERR DumpTree { stack => $elements, neighbors => $neighbors }, $coordinate ; 
 # 	} 
 
-my ($windows_width, $windows_height) = $self->{root_window}->get_size() ;
-my ($v_value, $h_value) = ($self->{sc_window}->get_vadjustment()->get_value(), $self->{sc_window}->get_hadjustment()->get_value()) ;
+my ($windows_width, $windows_height) = $self->{ROOT_WINDOW}->get_size() ;
+my ($v_value, $h_value) = ($self->{SC_WINDOW}->get_vadjustment()->get_value(), $self->{SC_WINDOW}->get_hadjustment()->get_value()) ;
 my ($start_x, $end_x, $start_y, $end_y) = 
 	(
 	int($h_value / $character_width - 2),
@@ -652,7 +652,7 @@ $gc->paint;
 
 # draw elements
 my $element_index = 0 ;
-$self->{seen_elements} = undef ;
+$self->{SEEN_ELEMENTS} = undef ;
 
 my %seen_elements_hash ;
 
@@ -668,22 +668,27 @@ for my $element (@{$self->{ELEMENTS}})
 		my @x = map {$_->[1]} @coordinates;
 		my @y = map {$_->[0]} @coordinates;
 		
-		$element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES} = [min(@x), max(@x), min(@y), max(@y)] ;
+		$element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES} = {
+			min_x => min(@x),
+			max_x => max(@x),
+			min_y => min(@y),
+			max_y => max(@y),
+			} ;
 		}
 	
-	unless(($element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES}->[0] > $end_x)
-		|| ($element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES}->[1] < $start_x)
-		|| ($element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES}->[2] > $end_y)
-		|| ($element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES}->[3] < $start_y))
+	unless(($element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES}{min_x} > $end_x)
+		|| ($element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES}{max_x} < $start_x)
+		|| ($element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES}{min_y} > $end_y)
+		|| ($element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES}{max_y} < $start_y))
 		{
 		$element->gui_draw($self, $element_index, $gc, $font_description, $character_width, $character_height) ;
-		push @{$self->{seen_elements}}, $element ;
+		push @{$self->{SEEN_ELEMENTS}}, $element ;
 		}
 	}
 
-@seen_elements_hash{@{$self->{seen_elements}}} = () if (defined $self->{seen_elements}) ;
+@seen_elements_hash{@{$self->{SEEN_ELEMENTS}}} = () if (defined $self->{SEEN_ELEMENTS}) ;
 
-$self->draw_cross_overlays($gc, $self->{seen_elements}, $character_width, $character_height) if $self->{USE_CROSS_MODE} ;
+$self->draw_cross_overlays($gc, $self->{SEEN_ELEMENTS}, $character_width, $character_height) if $self->{USE_CROSS_MODE} ;
 $self->draw_overlay($gc, $widget_width, $widget_height, $character_width, $character_height) ;
 $self->draw_find_keywords_highlight($gc, $character_width, $character_height) ;
 
@@ -810,8 +815,8 @@ my $extra_point_rendering = $self->{CACHE}{EXTRA_POINT} ;
 
 for my $element (
 		$self->{DISPLAY_ALL_CONNECTORS} 
-			? @{$self->{seen_elements}}
-			: grep {$self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1)} @{$self->{seen_elements}}
+			? @{$self->{SEEN_ELEMENTS}}
+			: grep {$self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1)} @{$self->{SEEN_ELEMENTS}}
 		)
 	{
 	for my $connector ($element->get_connector_points())
@@ -988,8 +993,8 @@ if ($self->{USE_BINDINGS_COMPLETION} && defined $self->{BINDINGS_COMPLETION})
 	
 	my ($width, $height) = ($self->{BINDINGS_COMPLETION_LENGTH} * $font_character_width, $font_character_height * $self->{BINDINGS_COMPLETION}->@*) ;
 	
-	my ($window_width, $window_height) = $self->{root_window}->get_size() ;
-	my ($scroll_bar_x, $scroll_bar_y)  = ($self->{sc_window}->get_hadjustment()->get_value(), $self->{sc_window}->get_vadjustment()->get_value()) ;
+	my ($window_width, $window_height) = $self->{ROOT_WINDOW}->get_size() ;
+	my ($scroll_bar_x, $scroll_bar_y)  = ($self->{SC_WINDOW}->get_hadjustment()->get_value(), $self->{SC_WINDOW}->get_vadjustment()->get_value()) ;
 	my $window_end                     = $window_width + $scroll_bar_x ;
 	
 	my $start_x ;
@@ -1309,9 +1314,9 @@ sub update_focus_in_event
 {
 my ($self, $is_need_focus_in) = @_ ;
 
-for my $asciio (@{$self->{asciios}})
+for my $asciio (@{$self->{ASCIIOS}})
 	{
-	$asciio->{is_need_focus_in} = $is_need_focus_in;
+	$asciio->{IS_NEED_FOCUS_IN} = $is_need_focus_in;
 	}
 }
 
@@ -1344,7 +1349,7 @@ if($self->{TAB_LABEL_NUM} == $page_num)
 	my $root_window = $notebook->get_toplevel() ;
 
 	# here must first get the scroll bar position, and then grab_focus
-	$self->{SCROLL_BAR_POSITION} = [$self->{sc_window}->get_hadjustment()->get_value(), $self->{sc_window}->get_vadjustment()->get_value()] ;
+	$self->{SCROLL_BAR_POSITION} = [$self->{SC_WINDOW}->get_hadjustment()->get_value(), $self->{SC_WINDOW}->get_vadjustment()->get_value()] ;
 
 	$widget->grab_focus() ;
 	$root_window->show_all() ;
@@ -1356,7 +1361,7 @@ sub focus_in_event
 {
 my ($widget, $event, $self) = @_ ;
 
-if($self->{is_need_focus_in})
+if($self->{IS_NEED_FOCUS_IN})
 	{
 	my $scwin = $widget->get_parent() ;
 	my $position = delete $self->{FIRST_SCROLL_BAR_POSITION} // $self->{SCROLL_BAR_POSITION} ;
@@ -1492,11 +1497,11 @@ sub change_cursor
 {
 my ($self, $cursor_name) = @_ ;
 
-my $display = $self->{widget}->get_display() ;
+my $display = $self->{WIDGET}->get_display() ;
 
 my $cursor = Gtk3::Gdk::Cursor->new_for_display($display, $cursor_name) ;
 
-$self->{widget}->get_parent_window()->set_cursor($cursor) ;
+$self->{WIDGET}->get_parent_window()->set_cursor($cursor) ;
 }
 
 #-----------------------------------------------------------------------------
@@ -1511,7 +1516,7 @@ my ($self, $cursor_name) = @_ ;
 
 unless(exists $custom_sursor_cache{$cursor_name})
 	{
-	my $display = $self->{widget}->get_display() ;
+	my $display = $self->{WIDGET}->get_display() ;
 	my $pixbuf ;
 
 	eval
@@ -1525,7 +1530,7 @@ unless(exists $custom_sursor_cache{$cursor_name})
 		}
 	$custom_sursor_cache{$cursor_name} = Gtk3::Gdk::Cursor->new_from_pixbuf($display, $pixbuf, 0, 0);
 	}
-$self->{widget}->get_parent_window()->set_cursor($custom_sursor_cache{$cursor_name}) ;
+$self->{WIDGET}->get_parent_window()->set_cursor($custom_sursor_cache{$cursor_name}) ;
 }
 }
 
@@ -1547,13 +1552,13 @@ my @asciios = (ref($new_self) eq 'ARRAY') ? @{$new_self} : ($new_self);
 # Start operation from TAB 0
 $self = $self->switch_specific_tab(0) ;
 my $new_asciio = $self->switch_tab(1) ;
-for my $index (0 .. scalar @{$self->{asciios}} - 2)
+for my $index (0 .. scalar @{$self->{ASCIIOS}} - 2)
 	{
 	$new_asciio = $new_asciio->delete_tab(1) ;
 	}
 
 # The first TAB must be displayed here, and the order of the last tab pages is correct.
-$self->{root_window}->show_all() ;
+$self->{ROOT_WINDOW}->show_all() ;
 
 my $decoder = get_sereal_decoder() ;
 

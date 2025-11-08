@@ -1,6 +1,6 @@
 # Cross Mode
 
-## 1 Introduction
+## Introduction
 
 In normal mode, elements boundaries are independent of each.
 
@@ -11,7 +11,7 @@ In cross mode intersections are merged:
 ![cross_elements](cross_elements.png)
 
 
-## 2 Complex graphics
+## Complex graphics
 
 The cross-mode lets you create graphics like this table
 
@@ -31,9 +31,9 @@ The cross-mode lets you create graphics like this table
 
 ```
 
-## 3 Enabling cross-mode
+## Enabling cross-mode
 
-### 3.1 Globally
+### Globally
 
 Add this line in your user configuration.
 
@@ -41,22 +41,22 @@ Add this line in your user configuration.
 USE_CROSS_MODE => 1,
 ```
 
-### 3.2 Dynamically
+### Dynamically
 
 Binding: «z-x» 'Switch cross mode'
 
-## 4 Line and Box
+## Line and Box
 
 ![cross_lines](cross_lines.gif)
 
 ![cross_boxs](cross_boxs.gif)
 
-## 5 Lines and boxes
+## Lines and boxes
 
 ![cross_box_line](cross_box_line.gif)
 
 
-## 6 Exported to text
+## Exported to text
 
 ```
         .--------.      ╭────────╮    ┏━━━━━━━━┓    ╔════════╗

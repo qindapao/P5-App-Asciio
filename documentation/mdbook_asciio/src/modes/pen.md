@@ -1,13 +1,13 @@
 # pen
 
-## 1 Introduction
+## Introduction
 
 Pen mode is used to draw one character at a time into the canvas, often used
 for small ascii art creations. This is a special feature of the GUI port.
 
-## 2 Basic operations
+## Basic operations
 
-### 2.1 Entering and exiting pen mode
+### Entering and exiting pen mode
 
 | action         | binding       |
 |----------------|---------------|
@@ -20,7 +20,7 @@ After entering the **pen mode**, the mouse cursor will change into the shape of
 a pen tip. Before any characters are changed, the question mark character is
 currently inserted by default.
 
-### 2.2 Draw characters
+### Draw characters
 
 1. Move the mouse to a certain position, then click the `left mouse button` or
 the `Enter key` to insert a character at the current position.
@@ -61,7 +61,7 @@ input in a text editor.
 
 ![pen_newline_and_wrap](pen_newline_and_wrap.gif)
 
-### 2.3 Fast keyboard-based movement
+### Fast keyboard-based movement
 
 When we are drawing ascii art, we may have to draw many small elements, if we
 click with the mouse every time we change the character,It may not be efficient,
@@ -72,7 +72,7 @@ keyboard-based movement.
 ![pen_keyboard_move](pen_keyboard_move.gif)
 
 
-### 2.4 Types of characters that can be entered
+### Types of characters that can be entered
 
 By default, we type in ascii characters on the keyboard, including letters,
 numbers and symbols. But if the user is Other character groups are customized in
@@ -114,7 +114,7 @@ to the current editing situation.
 
 
 
-### 2.5 Change the character drawn by the pen
+### Change the character drawn by the pen
 
 * After entering pen mode, directly press the key corresponding to an ascii
 character on the keyboard to switch to that character. Note: When pressed, one
@@ -143,7 +143,7 @@ insertion characters after entering pen mode. (This has the highest priority).
 >In this case, the pen will loop through each non-blank character in the order 
 in which it was extracted.
 
-### 2.6 Switch to pen mode’s built-in eraser mode
+### Switch to pen mode’s built-in eraser mode
 
 This is mainly used to delete a single element without exiting pen mode. In pen 
 mode, press the Tab key to switch to the eraser. In order to match the pen 
@@ -162,7 +162,7 @@ on the dragging path will be deleted.
 If you're not in pen mode, you can also **enter eraser mode directly** via 
 <<Shift + E>>.
 
-## 3 Merge the completed ascii art into a text box
+## Merge the completed ascii art into a text box
 
 | action              | binding group                 | bingding  |
 |---------------------|-------------------------------|-----------|
@@ -178,7 +178,7 @@ elements, there is no point in saving copies of them, so we can make it simpler.
 
 ![merge_all_pixels_into_a_box](merge_all_pixels_into_a_box.gif)
 
-## 4 Split any element into pixels
+## Split any element into pixels
 
 | action                  | binding group                 | bingding |
 |-------------------------|-------------------------------|----------|

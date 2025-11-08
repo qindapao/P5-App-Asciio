@@ -41,10 +41,10 @@ my %simulate_mouse_type_map = (
 my $mouse_emulation_move_direction = 'static' ;
 
 my @keyboard_layout = (
-    ['`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'BS'],
-    ['Tab', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\\'],
-    ['CL', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', "'", 'Enter'],
-    ['Shift', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', 'Shift'],
+    [qw(` 1 2 3 4 5 6 7 8 9 0 - = BS)],
+    [qw(Tab q w e r t y u i o p [ ] \\)],
+    [qw(CL a s d f g h j k l ; ' Enter)],
+    [qw(Shift z x c v b n m , . / Shift)],
 ) ;
 
 
@@ -66,6 +66,7 @@ sub pen_switch_show_mapping_help_location
 my ($asciio) = @_ ;
 
 $pen_show_mapping_location = ($pen_show_mapping_location eq 'left') ? 'right' : 'left' ;
+$asciio->update_display() ;
 }
 
 #----------------------------------------------------------------------------------------------
@@ -80,8 +81,8 @@ if($pen_mode_enable && (scalar keys %{$asciio->{PEN_MODE_CHARS_SETS}->[0]}))
 	my ($font_character_width, $font_character_height) = (9, 21) ;
 	my ($width, $height) = (60 * $font_character_width, 30 * $font_character_height) ;
 	
-	my ($window_width, $window_height) = $asciio->{root_window}->get_size() ;
-	my ($scroll_bar_x, $scroll_bar_y)  = ($asciio->{sc_window}->get_hadjustment()->get_value(), $asciio->{sc_window}->get_vadjustment()->get_value()) ;
+	my ($window_width, $window_height) = $asciio->{ROOT_WINDOW}->get_size() ;
+	my ($scroll_bar_x, $scroll_bar_y)  = ($asciio->{SC_WINDOW}->get_hadjustment()->get_value(), $asciio->{SC_WINDOW}->get_vadjustment()->get_value()) ;
 
 	my ($overlay_location_x, $overlay_location_y) = ($scroll_bar_x, $scroll_bar_y) ;
 
@@ -163,6 +164,7 @@ sub pen_switch_next_character_sets
 my ($asciio) = @_ ;
 
 push @{$asciio->{PEN_MODE_CHARS_SETS}}, shift @{$asciio->{PEN_MODE_CHARS_SETS}} ;
+$asciio->update_display() ;
 }
 
 #----------------------------------------------------------------------------------------------
@@ -171,6 +173,7 @@ sub pen_switch_previous_character_sets
 my ($asciio) = @_ ;
 
 unshift @{$asciio->{PEN_MODE_CHARS_SETS}}, pop @{$asciio->{PEN_MODE_CHARS_SETS}} ;
+$asciio->update_display() ;
 }
 
 #----------------------------------------------------------------------------------------------
@@ -285,6 +288,7 @@ my ($asciio) = @_ ;
 
 $mouse_emulation_move_direction = $direction_map{$mouse_emulation_move_direction} ;
 $asciio->{SIMULATE_MOUSE_TYPE} = $simulate_mouse_type_map{$mouse_emulation_move_direction} ;
+$asciio->update_display() ;
 }
 
 #---------------------------------------------------------------------------------------------
@@ -637,11 +641,11 @@ my @elements ;
 if($pixel_delete_only)
 	{
 	@elements = grep { ( ref($_) eq 'App::Asciio::stripes::pixel' )  
-					   && ( $asciio->is_over_element($_, $asciio->{MOUSE_X}, $asciio->{MOUSE_Y}) ) } reverse @{$asciio->{seen_elements}} ;
+					   && ( $asciio->is_over_element($_, $asciio->{MOUSE_X}, $asciio->{MOUSE_Y}) ) } reverse @{$asciio->{SEEN_ELEMENTS}} ;
 	}
 else
 	{
-	@elements = grep { $asciio->is_over_element($_, $asciio->{MOUSE_X}, $asciio->{MOUSE_Y}) } reverse @{$asciio->{seen_elements}} ;
+	@elements = grep { $asciio->is_over_element($_, $asciio->{MOUSE_X}, $asciio->{MOUSE_Y}) } reverse @{$asciio->{SEEN_ELEMENTS}} ;
 	}
 
 if(@elements)

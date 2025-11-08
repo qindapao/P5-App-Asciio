@@ -1,14 +1,14 @@
 # find
 
-## 1 Introduction
+## Introduction
 
 The find mode is mainly used to find the location where our target text appears
 in all asciio objects, and can quickly locate those matching positions and
 highlight them. This is a special feature on the GUI port.
 
-## 2 Basic operations
+## Basic operations
 
-### 2.1 Entering and exiting find mode
+### Entering and exiting find mode
 
 | action         | binding       |
 |----------------|---------------|
@@ -20,7 +20,7 @@ need to search for. You can enter here Words, phrases, sentences, and even a
 perl regular expression.
 
 
-### 2.2 Operation after entering find mode
+### Operation after entering find mode
 
 ![find](find.gif)
 

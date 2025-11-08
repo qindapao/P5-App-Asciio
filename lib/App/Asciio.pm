@@ -691,13 +691,16 @@ sub set_title
 {
 my ($self, $title) = @_;
 
-if(exists $self->{asciios})
+if(exists $self->{ASCIIOS})
 	{
-	map { defined $title and $_->{TITLE} = $title } @{$self->{asciios}} ;
-	}
+	for my $asciiio (@{$self->{ASCIIOS}})
+		{
+		$asciiio->{TITLE} = $title if defined $title;
+		}
+	} 
 else
 	{
-	defined $title and $self->{TITLE} = $title ;
+	$self->{TITLE} = $title if defined $title;
 	}
 }
 
@@ -804,12 +807,10 @@ my $modifiers = $event->{MODIFIERS} ;
 if($self->{PREVIOUS_X} != $x || $self->{PREVIOUS_Y} != $y)
 	{
 	delete $self->{BINDINGS_COMPLETION} ;
+	$self->update_display() ;
 	
 	$self->run_actions(["${modifiers}motion_notify", $event]) if $self->exists_action("${modifiers}motion_notify") ;
-	
-	($self->{PREVIOUS_X}, $self->{PREVIOUS_Y}) = ($self->{MOUSE_X}, $self->{MOUSE_Y}) = ($x, $y) ;
 	}
-
 }
 
 #-----------------------------------------------------------------------------

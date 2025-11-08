@@ -22,6 +22,12 @@ Readonly my $DEFAULT_BOX_TYPE =>
 	[1, 'fill-character',  '',   ' ', '',   1, ],
 	]  ;
 
+use constant
+	{
+    BOX_TYPE_FILL_ROW_INDEX     => 4,
+    BOX_TYPE_FILL_CHAR_POSITION => 3,
+	} ;
+
 sub new
 {
 my ($class, $element_definition) = @_ ;
@@ -50,10 +56,11 @@ my ($self, $text_only, $title_text, $box_type, $end_x, $end_y, $resizable, $edit
 
 my $fill_char = ' ';
 
-if(defined $box_type->[4][3] && $box_type->[4][3] ne '')
-{
-    $fill_char = substr($box_type->[4][3], 0, 1);
-}
+my $fill_value = $box_type->[BOX_TYPE_FILL_ROW_INDEX][BOX_TYPE_FILL_CHAR_POSITION];
+if (defined $fill_value && $fill_value ne '')
+	{
+	$fill_char = substr($fill_value, 0, 1);
+	}
 
 my ($text_width,  @lines) = (0) ;
 

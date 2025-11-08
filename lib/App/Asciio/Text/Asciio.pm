@@ -85,7 +85,7 @@ sub update_display
 {
 my ($self) = @_;
 
-$self->{seen_elements} = $self->{ELEMENTS} ;
+$self->{SEEN_ELEMENTS} = $self->{ELEMENTS} ;
 
 $self->SUPER::update_display() ;
 

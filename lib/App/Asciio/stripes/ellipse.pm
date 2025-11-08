@@ -24,6 +24,12 @@ Readonly my $DEFAULT_BOX_TYPE =>
 
 ] ;
 
+use constant
+	{
+    ELLIPSE_TYPE_FILL_ROW_INDEX     => 8,
+    ELLIPSE_TYPE_FILL_CHAR_POSITION => 2,
+	} ;
+
 use App::Asciio::String ;
 
 #-----------------------------------------------------------------------------
@@ -209,10 +215,11 @@ Readonly my $mini_row => 3;
 Readonly my $mini_col => 3;
 
 my $fill_char = ' ';
+my $fill_value = $box_type->[ELLIPSE_TYPE_FILL_ROW_INDEX][ELLIPSE_TYPE_FILL_CHAR_POSITION];
 
-if(defined $box_type->[8][2] && $box_type->[8][2] ne '')
+if(defined $fill_value && $fill_value ne '')
 {
-    $fill_char = substr($box_type->[8][2], 0, 1);
+    $fill_char = substr($fill_value, 0, 1);
 }
 
 ($end_x, $end_y) = (-5, -5) if $auto_shrink;

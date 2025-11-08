@@ -126,61 +126,43 @@ sub rotate_text { ; }
 sub shrink { ; }
 
 #-----------------------------------------------------------------------------
-# :TODO: this function is very slow and there is currently no way to speed it up.
 sub get_gray_png
 {
 my ($self, $pixbuf, $gray_scale_factor, $alpha_factor) = @_ ;
 
-my $alpha_factor_value = max($alpha_factor, 0) ;
-my $has_alpha = $pixbuf->get_has_alpha();
-my $pixels = $pixbuf->get_pixels();
-my $rowstride = $pixbuf->get_rowstride();
-my $bits_per_sample = $pixbuf->get_bits_per_sample();
-my $width = $pixbuf->get_width();
-my $height = $pixbuf->get_height();
-my $channels = $pixbuf->get_n_channels();
+my $alpha = int($alpha_factor * 100) ;
 
-# Create a new Pixbuf with alpha channel
-my $new_pixbuf = Gtk3::Gdk::Pixbuf->new('rgb', 1, $bits_per_sample, $width, $height);
-my $new_pixels = $new_pixbuf->get_pixels();
-my $new_rowstride = $new_pixbuf->get_rowstride();
-my $new_channels = $new_pixbuf->get_n_channels();
+# print "scale:${gray_scale_factor}; alpha:${alpha_factor}\n";
 
-# my $t0 = Time::HiRes::gettimeofday();
+my $src_pixbuf = $pixbuf->add_alpha(0, 0, 0, 0);
 
-for my $y (0 .. $height - 1) 
-	{
-	for my $x (0 .. $width - 1) 
-		{
-		my $offset = $y * $rowstride + $x * $channels;
-		my $new_offset = $y * $new_rowstride + $x * $new_channels;
+my $gray_pixbuf = Gtk3::Gdk::Pixbuf->new(
+    'rgb', 1, 8,
+    $src_pixbuf->get_width,
+    $src_pixbuf->get_height
+);
 
-		my ($r, $g, $b, $a) ;
-		if ($has_alpha) {
-			($r, $g, $b, $a) = map { ord(substr($pixels, $offset + $_, 1)) } 0 .. $channels - 1;
-		} else {
-			($r, $g, $b) = map { ord(substr($pixels, $offset + $_, 1)) } 0 .. $channels - 1;
-			$a = 255 ;
-		}
+$src_pixbuf->saturate_and_pixelate($gray_pixbuf, $gray_scale_factor, 0);
 
-		my $gray = int(($r + $g + $b) / 3);
+my $dest_pixbuf = Gtk3::Gdk::Pixbuf->new(
+    'rgb', 1, 8,
+    $gray_pixbuf->get_width,
+    $gray_pixbuf->get_height
+);
 
-		my $new_gray = int(min($gray * $gray_scale_factor, 255));
+$gray_pixbuf->composite(
+    $dest_pixbuf,
+    0, 0,
+    $gray_pixbuf->get_width,
+    $gray_pixbuf->get_height,
+    0, 0,
+    1.0, 1.0,
+    'nearest',
+    $alpha
+);
 
-		substr($new_pixels, $new_offset + $_, 1, chr($new_gray)) for 0 .. 2;
-
-		# Adjust alpha channel value
-		my $new_alpha = int($a * $alpha_factor_value);
-		substr($new_pixels, $new_offset + 3, 1, chr($new_alpha));
-		}
-	}
-# my $t1 = Time::HiRes::gettimeofday();
-# printf STDERR "add time: %0.4f sec.\n", $t1 - $t0 ;
-
-my $gray_pixbuf = Gtk3::Gdk::Pixbuf->new_from_data($new_pixels, 'rgb', 1, $bits_per_sample, $width, $height, $new_rowstride);
-
-$self->{IMAGE_TYPE} = 'png' ;
-return $gray_pixbuf->save_to_bufferv($self->{IMAGE_TYPE}, [], []) ;
+$self->{IMAGE_TYPE} = 'png';
+return $dest_pixbuf->save_to_bufferv($self->{IMAGE_TYPE}, [], []);
 }
 
 #-----------------------------------------------------------------------------
@@ -192,10 +174,10 @@ if(defined $gray_scale_factor_step || defined $alpha_factor_step)
 	{
 	my $pixbuf = $self->get_pixbuf($self->{IMAGE}, $self->{IMAGE_TYPE}) ;
 
-	# gray_scale_factor_step start from 1 and gradually increase
-	# alpha_factor_step start from 1 and gradually decrease until 0
-	$self->{GRAY_SCALE_FACTOR} += $gray_scale_factor_step if defined $gray_scale_factor_step ;
-	$self->{GRAY_SCALE_FACTOR} = max(1, $self->{GRAY_SCALE_FACTOR}) ;
+	$self->{GRAY_SCALE_FACTOR} -= $gray_scale_factor_step if defined $gray_scale_factor_step ;
+	$self->{GRAY_SCALE_FACTOR} = max($self->{GRAY_SCALE_FACTOR}, 0) ;
+	$self->{GRAY_SCALE_FACTOR} = min($self->{GRAY_SCALE_FACTOR}, 1) ;
+
 	$self->{ALPHA_FACTOR} -= $alpha_factor_step if defined $alpha_factor_step ;
 	$self->{ALPHA_FACTOR} = max($self->{ALPHA_FACTOR}, 0.05) ;
 	$self->{ALPHA_FACTOR} = min($self->{ALPHA_FACTOR}, 1) ;

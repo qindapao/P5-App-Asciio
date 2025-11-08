@@ -37,7 +37,7 @@ my ($self, $is_clear_all_height) = @_ ;
 map {
 	$_->change_current_tab_lable_name($_->{TAB_LABEL_NAME});
 	$_->{CACHE}{FIND_COORDINATES} = undef;
-} @{$self->{asciios}} ;
+} @{$self->{ASCIIOS}} ;
 
 $self->change_custom_cursor('find') ;
 
@@ -82,20 +82,20 @@ my ($self) = @_ ;
 
 my @tabs_found_text ;
 
-for my $i (0 .. $#{$self->{asciios}}) 
+for my $i (0 .. $#{$self->{ASCIIOS}}) 
 	{
-	if(search_text($self->{asciios}->[$i]))
+	if(search_text($self->{ASCIIOS}->[$i]))
 		{
 		push @tabs_found_text, $i ;
-		my $tab_label_name = $self->{asciios}->[$i]->{TAB_LABEL_NAME} ;
-		$self->{asciios}->[$i]->{label}->set_markup("<span background='yellow' foreground='black'>$tab_label_name</span>") ;
+		my $tab_label_name = $self->{ASCIIOS}->[$i]->{TAB_LABEL_NAME} ;
+		$self->{ASCIIOS}->[$i]->{LABEL}->set_markup("<span background='yellow' foreground='black'>$tab_label_name</span>") ;
 		}
 	}
 if(@tabs_found_text)
 	{
 	# if keywords are found in multiple TABs, the search mode is automatically set to use the old keyword mode.
 	$is_use_old_search_keyword = 1 if(scalar @tabs_found_text > 1) ;
-	$self->{root_window}->show_all() ;
+	$self->{ROOT_WINDOW}->show_all() ;
 	$self->update_display() ;
 	return 1 ;
 	}
@@ -174,8 +174,8 @@ sub jump_to_first_highlight
 my ($self) = @_ ;
 
 my ($character_width, $character_height) = $self->get_character_size() ;
-my ($window_width, $window_height) = $self->{root_window}->get_size() ;
-my ($window_x_start, $window_y_start)  = ($self->{sc_window}->get_hadjustment()->get_value(), $self->{sc_window}->get_vadjustment()->get_value()) ;
+my ($window_width, $window_height) = $self->{ROOT_WINDOW}->get_size() ;
+my ($window_x_start, $window_y_start)  = ($self->{SC_WINDOW}->get_hadjustment()->get_value(), $self->{SC_WINDOW}->get_vadjustment()->get_value()) ;
 my ($window_x_end, $window_y_end) = ($window_width + $window_x_start, $window_height + $window_y_start) ;
 
 my $first_highlight_x = $self->{CACHE}{FIND_COORDINATES}->[0][$x_index] * $character_width ;
@@ -185,13 +185,13 @@ my $is_need_update = 0 ;
 
 unless ($window_x_start < $first_highlight_x && $first_highlight_x < $window_x_end)
 	{
-	$self->{sc_window}->get_hadjustment()->set_value($first_highlight_x) ;
+	$self->{SC_WINDOW}->get_hadjustment()->set_value($first_highlight_x) ;
 	$is_need_update++ ;
 	}
 
 unless ($window_y_start < $first_highlight_y && $first_highlight_y < $window_y_end)
 	{
-	$self->{sc_window}->get_vadjustment()->set_value($first_highlight_y) ;
+	$self->{SC_WINDOW}->get_vadjustment()->set_value($first_highlight_y) ;
 	$is_need_update++ ;
 	}
 

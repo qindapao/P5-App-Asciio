@@ -32,10 +32,7 @@ my $t0 = Time::HiRes::gettimeofday();
 
 for my $element (@elements)
 	{
-	unless(exists $element->{CACHE}{ZBUFFER}{GLYPHS})
-		{
-		$element->{CACHE}{ZBUFFER}{GLYPHS} = $self->get_glyphs($element) ;
-		}
+	$element->{CACHE}{ZBUFFER}{GLYPHS} //= $self->get_glyphs($element) ;
 	
 	for my $glyph ($element->{CACHE}{ZBUFFER}{GLYPHS}->@*)
 		{
