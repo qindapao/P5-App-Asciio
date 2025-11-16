@@ -32,16 +32,17 @@ sub new {
 
 sub use_markup
 {
-my ($use_it) = @_ ;
+my ($use_it) = @_;
+$use_it = lc($use_it // '');
 
-if($use_it eq 'zimwiki')
-	{
-	$USE_MARKUP_CLASS = App::Asciio::Zimwiki->new() ;
-	}
-else
-	{
-	$USE_MARKUP_CLASS = App::Asciio::Markup->new() ;
-	}
+my $class = "App::Asciio::" . ucfirst($use_it);
+
+if ($class->can('new')) {
+	$USE_MARKUP_CLASS = $class->new();
+	return;
+}
+
+$USE_MARKUP_CLASS = App::Asciio::Markup->new();
 }
 
 #-----------------------------------------------------------------------------
@@ -130,6 +131,19 @@ my ($self, $string) = @_;
 return del_markup_characters($string);
 }
 
+
+#-----------------------------------------------------------------------------
+sub convert_basic_markup {
+    my ($self, $fit_str) = @_;
+    # 默认的 Zimwiki 转换规则
+    $fit_str =~ s/<\/?b>/\*\*/g;
+    $fit_str =~ s/<\/?u>/__/g;
+    $fit_str =~ s/<\/?i>/\/\//g;
+    $fit_str =~ s/<\/?s>/~~/g;
+    return $fit_str;
+}
+
+
 #-----------------------------------------------------------------------------
 sub get_markup_coordinates
 {
@@ -145,10 +159,8 @@ if(is_markup_string($strip_line))
 		my $sub_str = substr($strip_line, 0, pos($strip_line));
 		$ori_x = $element_x + $strip_x + App::Asciio::String::unicode_length($sub_str) ;
 		my $fit_str = $&;
-		$fit_str =~ s/<\/?b>/\*\*/g;
-		$fit_str =~ s/<\/?u>/__/g;
-		$fit_str =~ s/<\/?i>/\/\//g;
-		$fit_str =~ s/<\/?s>/~~/g;
+		$fit_str = $self->convert_basic_markup($fit_str);
+		
 		# link [[link|link description]]
 		if($fit_str =~ /$underline_left_regex/)
 			{
@@ -218,7 +230,8 @@ if(is_markup_string($string))
 	$string =~ s/$underline_regex/<span underline="double">$2<\/span>/g;
 	$string =~ s/$hunk_regex/<span background="yellow">oo<\/span>/g ;
 	# convert bold fonts to precise size control 
-	$font_size -= 1 ;
+	# :TODO: In some environments, the bold size is correct again, so we won’t deal with it for now.
+	# $font_size -= 1 ;
 	$string =~ s/(<b>)((<[ius]>)*)([^<]+)((<\/[ius]>)*)(<\/b>)/<span font_desc="$font_size" weight="bold">$2$4$5<\/span>/g ;
 	}
 
@@ -243,6 +256,17 @@ else
 	}
 }
 
+#-----------------------------------------------------------------------------
+package App::Asciio::Vimwiki;
+use base qw/App::Asciio::Zimwiki/;
+
+sub convert_basic_markup {
+    my ($self, $fit_str) = @_;
+    $fit_str =~ s/<\/?b>/\*/g;
+    $fit_str =~ s/<\/?i>/_/g;
+    $fit_str =~ s/<\/?s>/~~/g;
+    return $fit_str;
+}
 
 #-----------------------------------------------------------------------------
 

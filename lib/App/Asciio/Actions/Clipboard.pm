@@ -242,7 +242,7 @@ copy_to_clipboard($self) ;
 my $export_elements = Clone::clone($self->{CLIPBOARD}) ;
 my $encoder         = get_sereal_encoder({compress => SRL_ZLIB}) ;
 my $serialized      = $encoder->encode($export_elements) ;
-my $base64          = MIME::Base64::encode_base64($serialized, '') ;
+my $base64          = MIME::Base64::encode_base64($serialized, "\n") ;
 }
 
 sub export_elements_to_system_clipboard

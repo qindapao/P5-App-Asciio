@@ -10,7 +10,7 @@ ZOOM_LOWER_LIMIT => 0,
 CANVAS_WIDTH => 200,
 CANVAS_HEIGHT => 150,
 
-USE_MARKUP_MODE => '',
+USE_MARKUP_MODE => 'vimwiki',
 
 EDIT_TEXT_INLINE => 0,
 GIT_MODE_CONNECTOR_CHAR_LIST => ['*', 'o', '+', 'x', 'X', '┼', '╋', '╬'],
