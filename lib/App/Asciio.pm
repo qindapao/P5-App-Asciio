@@ -807,7 +807,8 @@ if($self->{PREVIOUS_X} != $x || $self->{PREVIOUS_Y} != $y)
 	
 	$self->run_actions(["${modifiers}motion_notify", $event]) if $self->exists_action("${modifiers}motion_notify") ;
 	
-	($self->{PREVIOUS_X}, $self->{PREVIOUS_Y}) = ($self->{MOUSE_X}, $self->{MOUSE_Y}) = ($x, $y) ;
+	# :QQ: Can we not update the front coordinates here? Let specific events update
+	($self->{MOUSE_X}, $self->{MOUSE_Y}) = ($x, $y) ;
 	}
 
 }

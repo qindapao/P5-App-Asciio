@@ -4,6 +4,7 @@ package App::Asciio::Actions::Mouse ;
 #----------------------------------------------------------------------------------------------
 
 use List::MoreUtils qw(any minmax first_value) ;
+use List::Util qw(max) ;
 use Readonly ;
 
 use App::Asciio::stripes::section_wirl_arrow ;
@@ -403,6 +404,10 @@ sub mouse_drag_canvas
 {
 my ($self, $event) = @_ ;
 
+# :QQ: If have elements are selected, **DnD** is executed.
+#		If no element is selected, **canvas drag** is executed.
+return if $self->any_selected_elements() ;
+
 my ($x, $y) = @{$event->{COORDINATES}}[0, 1] ;
 
 if($event->{STATE} eq 'dragging-button1' && ($self->{PREVIOUS_X} != $x || $self->{PREVIOUS_Y} != $y))
@@ -415,23 +420,9 @@ if($event->{STATE} eq 'dragging-button1' && ($self->{PREVIOUS_X} != $x || $self-
 	my $new_h_value = $h_value - (($x - $self->{PREVIOUS_X}) * $character_width) ;
 	my $new_v_value = $v_value - (($y - $self->{PREVIOUS_Y}) * $character_height) ;
 	
-	if($new_h_value >= 0)
-		{
-		$self->{SC_WINDOW}->get_hadjustment()->set_value($new_h_value) ;
-		}
-	else
-		{
-		# scrollbar reached top
-		}
-	
-	if($new_v_value >= 0)
-		{
-		$self->{SC_WINDOW}->get_vadjustment()->set_value($new_v_value) ;
-		}
-	else
-		{
-		# scrollbar reached top
-		}
+	# when <=0 scrollbar reached top
+	$self->{SC_WINDOW}->get_hadjustment()->set_value(max($new_h_value, 0)) ;
+	$self->{SC_WINDOW}->get_vadjustment()->set_value(max($new_v_value, 0)) ;
 	}
 else
 	{
