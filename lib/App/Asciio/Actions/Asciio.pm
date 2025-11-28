@@ -71,6 +71,28 @@ if(@selected_elements == 1)
 					}
 				] ;
 		
+		$element->is_crossover_enabled()
+			? push @context_menu_entries,
+				[
+				"/disable crossover",
+				sub 
+					{
+					$self->create_undo_snapshot() ;
+					$element->enable_crossover(0) ;
+					$self->update_display() ;
+					}
+				]
+			: push @context_menu_entries, 
+				[
+				"/enable crossover",
+				sub 
+					{
+					$self->create_undo_snapshot() ;
+					$element->enable_crossover(1) ;
+					$self->update_display() ;
+					}
+				] ;
+
 		$element->is_auto_shrink()
 			? push @context_menu_entries, ["/disable auto shrink", sub { $element->flip_auto_shrink() ; }]
 			: push @context_menu_entries, ["/enable auto shrink",  sub { $element->shrink() ; $element->flip_auto_shrink() ; }] ;

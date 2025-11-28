@@ -187,6 +187,10 @@ if(defined $element && 'App::Asciio::stripes::section_wirl_arrow' eq ref $elemen
 				}
 		],
 		[
+		$element->is_crossover_enabled() ? '/disable crossover' :  '/enable crossover', 
+			sub { $self->create_undo_snapshot() ; $element->enable_crossover(! $element->is_crossover_enabled()) ; $self->update_display() ; }
+		] ,
+		[
 		$element->are_diagonals_allowed() ? '/no diagonals' :  '/allow diagonals', 
 			sub { $element->allow_diagonals(! $element->are_diagonals_allowed()) }
 		] ;

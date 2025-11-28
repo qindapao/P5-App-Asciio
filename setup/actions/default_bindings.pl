@@ -183,7 +183,6 @@ register_action_handlers
 	'<< Change color >>'                  => ['000-c', ACTION_GROUP('color')                                                   ] ,
 	
 	'Flip binding completion'             => ['000-b', sub { $_[0]->{USE_BINDINGS_COMPLETION} ^= 1 ; $_[0]->update_display() ;}],
-	'Flip cross mode'                     => ['000-x', sub { $_[0]->{USE_CROSS_MODE} ^= 1 ; $_[0]->update_display ; }          ],
 	'Flip transparent element background' => ['000-t', \&App::Asciio::Actions::Unsorted::transparent_elements                  ],
 	'Flip grid display'                   => ['000-g', \&App::Asciio::Actions::Unsorted::flip_grid_display                     ],
 	'Flip rulers display'                 => ['000-r', \&App::Asciio::Actions::Unsorted::flip_rulers_display                   ],
