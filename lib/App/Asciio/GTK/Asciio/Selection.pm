@@ -91,35 +91,77 @@ sub polygon_selection
 {
 my ($self, $select_type) = @_ ;
 
+my @polygon_x = map {$_->[0]} @{$self->{SELECTION_POLYGON}} ;
+my @polygon_y = map {$_->[1]} @{$self->{SELECTION_POLYGON}} ;
+my ($polygon_min_x, $polygon_min_y, $polygon_max_x, $polygon_max_y) = (min(@polygon_x), min(@polygon_y), max(@polygon_x), max(@polygon_y)) ;
+
+my (@elements_to_be_selected, @elements_to_be_inverse_selected) ;
+
 for my $element (@{$self->{ELEMENTS}})
 	{
+	# :QQ: Strategy for synchronizing rectangular selection. Arrows cannot be selected by default.
+	next if(ref($element) =~ /arrow/ && !$self->{DRAG_SELECTS_ARROWS}) ;
+	
+	# :QQ: This is just to speed up the judgment. If the extreme value rectangle
+	#	of the element and the extreme value rectangle of the polygon
+	#	selection box do not intersect,
+	#	Then this element can be filtered directly to avoid subsequent heavy calculations.
+	#	Before doing this, check whether the element was previously in the
+	#	selected set. If so, it needs to be removed.
+	my ($emin_x, $emin_y, $emax_x, $emax_y) = @{ $element->{EXTENTS} } ;
+	if		(($polygon_max_x < $emin_x + $element->{X})
+		||	 ($polygon_min_x > $emax_x + $element->{X})
+		||	 ($polygon_max_y < $emin_y + $element->{Y})
+		||	 ($polygon_min_y > $emax_y + $element->{Y}))
+		{
+		if(exists($selected_elements{$element}))
+			{
+			push @elements_to_be_inverse_selected, $element ;
+			delete $selected_elements{$element} ;
+			}
+		# :QQ: There is no need to make the following judgments, just skip directly.
+		next ;
+		}
+
 	unless(exists $element->{CACHE}{SELECTION_COORDINATES})
 		{
-		my @coordinates = map { [split ';'] } keys %{App::Asciio::ZBuffer->new(0, $element)->{coordinates}};
-		@coordinates = map{ [reverse @$_]} @coordinates;
-		$element->{CACHE}{SELECTION_COORDINATES} = \@coordinates;
+		my @element_all_coordinates = map { [split ';'] } keys %{App::Asciio::ZBuffer->new(0, $element)->{coordinates}} ;
+		@element_all_coordinates = map{ [reverse @$_]} @element_all_coordinates ;
+		$element->{CACHE}{SELECTION_COORDINATES} = \@element_all_coordinates ;
 		}
-	
+
 	if(all_points_in_polygon($element->{CACHE}{SELECTION_COORDINATES}, $self->{SELECTION_POLYGON}))
 		{
-		$self->select_elements($select_type, $element);
-		$selected_elements{$element} = 1 ;
+		unless (exists $selected_elements{$element})
+			{
+			push @elements_to_be_selected, $element ;
+			$selected_elements{$element} = 1 ;
+			}
 		}
 	else
 		{
 		if(exists($selected_elements{$element}))
 			{
-			$self->select_elements(!$select_type, $element);
+			push @elements_to_be_inverse_selected, $element ;
 			delete $selected_elements{$element} ;
 			}
 		}
 	}
+
+# :QQ: The biggest performance bottleneck of the previous sub was calling select_elements in the element loop.
+#	Causes the sub to be called once for each element.
+#	Now it only needs to be called once, and the performance is improved exponentially!
+$self->select_elements($select_type, @elements_to_be_selected) if (@elements_to_be_selected) ;
+$self->select_elements(!$select_type, @elements_to_be_inverse_selected) if (@elements_to_be_inverse_selected) ;
 }
 
 #----------------------------------------------------------------------------------------------
 
 sub polygon_selection_motion
 {
+# $select_type 
+# 1: select
+# 0: deselect
 my ($self, $select_type, $event) = @_;
 
 my ($x, $y) = @{$event->{COORDINATES}}[0,1] ;
