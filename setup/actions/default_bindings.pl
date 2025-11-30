@@ -260,6 +260,7 @@ register_action_handlers
 	SHORTCUTS   => '000-i',
 	
 	'Add connector'                       => ['000-c', \&App::Asciio::Actions::Elements::add_element, ['Asciio/connector', 0]                ],
+	'Add numbered connector to element'   => ['00S-C', \&App::Asciio::Actions::Elements::add_numbered_connector_to_element                   ],
 	'Add text'                            => ['000-t', \&App::Asciio::Actions::Elements::add_element, ['Asciio/text', 1]                     ],
 	'Add arrow'                           => ['000-a', \&App::Asciio::Actions::Elements::add_element, ['Asciio/wirl_arrow', 0]               ],
 	'Add angled arrow'                    => ['00S-A', \&App::Asciio::Actions::Elements::add_element, ['Asciio/angled arrow', 0]             ],
