@@ -407,7 +407,18 @@ sub add_connector
 my ($self, $connector) = @_ ;
 my ($x, $scale_x, $offset_x, $y, $scale_y, $offset_y, $name) = $connector->@* ;
 
-$self->remove_connector($name) ;
+# :QQ: In the same element, there can only be one connector at the same position, right?
+my @conflicts = grep { $_->{NAME} eq $name
+		|| (
+			$_->{X}           == $x
+			&& $_->{SCALE_X}  == $scale_x
+			&& $_->{OFFSET_X} == $offset_x
+			&& $_->{Y}        == $y
+			&& $_->{SCALE_Y}  == $scale_y
+			&& $_->{OFFSET_Y} == $offset_y
+		   )
+	} $self->{CONNECTORS}->@* ;
+for (@conflicts) { $self->remove_connector($_->{NAME}) ; }
 
 push $self->{CONNECTORS}->@*, 
 	{
