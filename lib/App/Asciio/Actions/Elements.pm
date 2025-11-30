@@ -7,6 +7,7 @@ use utf8 ;
 
 use File::Slurper qw(read_text) ;
 use File::HomeDir ;
+use List::Util qw(max);
 
 use App::Asciio::Actions::Box ;
 use App::Asciio::Actions::Multiwirl ;
@@ -364,6 +365,131 @@ $self->add_element_at($line, $self->{MOUSE_X}, $self->{MOUSE_Y});
 $self->select_elements(1, $line);
 
 $self->update_display();
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub add_numbered_connector_to_element
+{
+my ($self) = @_ ;
+
+$self->create_undo_snapshot() ;
+
+my @selected_elements = $self->get_selected_elements(1) ;
+
+return unless (
+	@selected_elements == 1
+	&& $self->is_over_element($selected_elements[0], $self->{MOUSE_X}, $self->{MOUSE_Y}, 1)
+	&& exists $selected_elements[0]->{CONNECTORS}
+	) ;
+
+my $element = $selected_elements[0] ;
+
+# The connector does not allow setting the outer radius of the element rectangle > 1
+# But outer radius == 1 is allowed
+# .---.------------------------------------------>  X
+# |   |
+# |   |     1
+# |   v┌────o───────┐
+# |   o│.----------.│
+# |    │|     o    |│
+# |  2 o| o   5    |o 4
+# |    │'----------'│
+# |Y   └────o───────┘
+# v         3
+
+my @numbered_connector_names = map { $_->{NAME} } grep { defined $_->{NAME} && $_->{NAME} =~ /^\d+$/ } $element->{CONNECTORS}->@* ;
+my $max_num = @numbered_connector_names ? max(@numbered_connector_names) : 0 ;
+$max_num++ ;
+
+# 4 outer corner vertices
+if ($self->{MOUSE_X} == $element->{X} - 1 && $self->{MOUSE_Y} == $element->{Y} - 1)
+{
+$element->add_connector([-1, -1, 0, -1, -1, 0, $max_num]) ;
+}
+elsif ($self->{MOUSE_X} == $element->{X} + $element->{WIDTH} && $self->{MOUSE_Y} == $element->{Y} - 1)
+{
+$element->add_connector([0, 100, 0, -1, -1, 0, $max_num]) ;
+}
+elsif ($self->{MOUSE_X} == $element->{X} - 1 && $self->{MOUSE_Y} == $element->{Y} + $element->{HEIGHT})
+{
+$element->add_connector([-1, -1, 0, 0, 100, 0, $max_num]) ;
+}
+elsif ($self->{MOUSE_X} == $element->{X} + $element->{WIDTH} && $self->{MOUSE_Y} == $element->{Y} + $element->{HEIGHT})
+{
+$element->add_connector([0, 100, 0, 0, 100, 0, $max_num]) ;
+}
+# 4 outer edges
+elsif ($self->{MOUSE_Y} == $element->{Y} -1)
+{
+my $scale_x = int(($self->{MOUSE_X} - $element->{X}) * 100 / $element->{WIDTH}) ;
+$element->add_connector([0, $scale_x, 1, -1, -1, 0, $max_num]) ;
+}
+elsif ($self->{MOUSE_Y} == $element->{Y} + $element->{HEIGHT})
+{
+my $scale_x = int(($self->{MOUSE_X} - $element->{X}) * 100 / $element->{WIDTH}) ;
+$element->add_connector([0, $scale_x, 1, 0, 100, 0, $max_num]) ;
+}
+elsif ($self->{MOUSE_X} == $element->{X} -1)
+{
+my $scale_y = int(($self->{MOUSE_Y} - $element->{Y}) * 100 / $element->{HEIGHT}) ;
+$element->add_connector([-1, -1, 0, 0, $scale_y, 1, $max_num]) ;
+}
+elsif ($self->{MOUSE_X} == $element->{X} + $element->{WIDTH})
+{
+my $scale_y = int(($self->{MOUSE_Y} - $element->{Y}) * 100 / $element->{HEIGHT}) ;
+$element->add_connector([0, 100, 0, 0, $scale_y, 1, $max_num]) ;
+}
+# 4 inner vertices of the element
+elsif ($self->{MOUSE_X} == $element->{X} && $self->{MOUSE_Y} == $element->{Y})
+{
+$element->add_connector([0, -1, 0, 0, -1, 0, $max_num]) ;
+}
+elsif ($self->{MOUSE_X} == $element->{X} + $element->{WIDTH} - 1 && $self->{MOUSE_Y} == $element->{Y})
+{
+$element->add_connector([0, 100, -1, 0, -1, 0, $max_num]) ;
+}
+elsif ($self->{MOUSE_X} == $element->{X} && $self->{MOUSE_Y} == $element->{Y} + $element->{HEIGHT} - 1)
+{
+$element->add_connector([0, -1, 0, 0, 100, -1, $max_num]) ;
+}
+elsif ($self->{MOUSE_X} == $element->{X} + $element->{WIDTH} - 1 && $self->{MOUSE_Y} == $element->{Y} + $element->{HEIGHT} - 1)
+{
+$element->add_connector([0, 100, -1, 0, 100, -1, $max_num]) ;
+}
+# 4 inner edges of the element
+elsif ($self->{MOUSE_X} == $element->{X})
+{
+my $scale_y = int(($self->{MOUSE_Y} - $element->{Y}) * 100 / $element->{HEIGHT}) ;
+$element->add_connector([0, -1, 0, 0, $scale_y, 1, $max_num]) ;
+}
+elsif ($self->{MOUSE_Y} == $element->{Y})
+{
+my $scale_x = int(($self->{MOUSE_X} - $element->{X}) * 100 / $element->{WIDTH}) ;
+$element->add_connector([0, $scale_x, 1, 0, -1, 0, $max_num]) ;
+}
+elsif ($self->{MOUSE_X} == $element->{X} + $element->{WIDTH} - 1)
+{
+my $scale_y = int(($self->{MOUSE_Y} - $element->{Y}) * 100 / $element->{HEIGHT}) ;
+$element->add_connector([0, 100, -1, 0, $scale_y, 1, $max_num]) ;
+}
+elsif ($self->{MOUSE_Y} == $element->{Y} + $element->{HEIGHT} - 1)
+{
+my $scale_x = int(($self->{MOUSE_X} - $element->{X}) * 100 / $element->{WIDTH}) ;
+$element->add_connector([0, $scale_x, 1, 0, 100, -1, $max_num]) ;
+}
+# Inside the element
+else
+{
+my $scale_x = int(($self->{MOUSE_X} - $element->{X}) * 100 / $element->{WIDTH}) ;
+my $scale_y = int(($self->{MOUSE_Y} - $element->{Y}) * 100 / $element->{HEIGHT}) ;
+$element->add_connector([0, $scale_x, 1, 0, $scale_y, 1, $max_num]) ;
+}
+
+my $connectors = $element->scale_connectors($element->{CONNECTORS}, $element->{WIDTH}, $element->{HEIGHT}) ;
+$element->{CONNECTORS} = $connectors ;
+
+$self->update_display() ;
 }
 
 #----------------------------------------------------------------------------------------------

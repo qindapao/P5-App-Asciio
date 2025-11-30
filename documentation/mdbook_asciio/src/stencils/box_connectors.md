@@ -48,3 +48,7 @@ The box element class also has these functions:
 
 ![box_connector](box_connector.png)
 
+## Add connector directly to the box
+
+![box_connector_add](box_connector_add.gif)
+
