@@ -248,10 +248,10 @@ unless (defined $self->{CONNECTORS})
 	for my $connector 
 		(
 		# X   SCALE_X OFFSET_X    Y   SCALE_Y  OFFSET_Y   NAME
-		[ 0,  50,     0 ,         -1, -1,      0 ,        'top_center'    ],
-		[ 0,  50,     0 ,         0,  100,     0 ,        'bottom_center' ],
-		[ -1, -1,     0 ,         0,  50,      0 ,        'left_center'   ],
-		[ 0,  100,    0 ,         0,  50,      0 ,        'right_center'  ],
+		[ 0  , 5000  , 0 , -1 , -1    , 0 , 'top_center'    ] ,
+		[ 0  , 5000  , 0 , 0  , 10000 , 0 , 'bottom_center' ] ,
+		[ -1 , -1    , 0 , 0  , 5000  , 0 , 'left_center'   ] ,
+		[ 0  , 10000 , 0 , 0  , 5000  , 0 , 'right_center'  ] ,
 		)
 		{
 		$self->add_connector($connector) ;
@@ -285,11 +285,14 @@ $self->set
 sub scale_connectors
 {
 my ($self, $connectors, $width, $height) = @_ ;
+my $round = sub { my ($num) = @_ ; return int(sprintf("%.0f", $num)) ; } ;
 
 for my $connector ($connectors->@*)
 	{
-	$connector->{X} = int($width  * $connector->{SCALE_X} / 100) + $connector->{OFFSET_X} if ($connector->{SCALE_X} >= 0) ;
-	$connector->{Y} = int($height * $connector->{SCALE_Y} / 100) + $connector->{OFFSET_Y} if ($connector->{SCALE_Y} >= 0) ;
+	# :QQ: I set the magnification to 10000, which is more accurate and may provide better visual feedback to the user.
+	#		At the same time, the rounding function is replaced by round(round half up), so that the setting is more accurate.
+	$connector->{X} = $round->($width  * $connector->{SCALE_X} / 10000) + $connector->{OFFSET_X} if ($connector->{SCALE_X} >= 0) ;
+	$connector->{Y} = $round->($height * $connector->{SCALE_Y} / 10000) + $connector->{OFFSET_Y} if ($connector->{SCALE_Y} >= 0) ;
 	}
 
 return $connectors ;
