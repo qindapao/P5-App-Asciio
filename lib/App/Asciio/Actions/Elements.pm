@@ -560,6 +560,42 @@ $self->update_display() ;
 }
 
 #----------------------------------------------------------------------------------------------
+sub remove_numbered_connector_in_element
+{
+my ($self) = @_ ;
+
+$self->create_undo_snapshot() ;
+
+my @selected_elements = $self->get_selected_elements(1) ;
+
+return unless (
+	@selected_elements == 1
+	&& $self->is_over_element($selected_elements[0], $self->{MOUSE_X}, $self->{MOUSE_Y}, 1)
+	&& exists $selected_elements[0]->{CONNECTORS}
+	) ;
+
+my $element = $selected_elements[0] ;
+
+# :QQ: Only our digital connectors can be deleted, the default connector is
+#	not allowedto be deleted?
+#	Deletion is much simpler than adding. We can delete accurately directly
+#	based on X and Y.
+my @numbered_connectors_to_be_deleted = grep 
+	{
+	$_->{X} == $self->{MOUSE_X} - $element->{X}
+	&& $_->{Y} == $self->{MOUSE_Y} - $element->{Y}
+	&& $_->{NAME} =~ /^\d+$/
+	} @{$element->{CONNECTORS}} ;
+
+for(@numbered_connectors_to_be_deleted)
+	{
+	$element->remove_connector($_->{NAME}) ;
+	}
+
+$self->update_display() ;
+}
+
+#----------------------------------------------------------------------------------------------
 
 1 ;
 

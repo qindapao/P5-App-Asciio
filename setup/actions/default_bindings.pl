@@ -48,6 +48,7 @@ register_action_handlers
 'Select elements by word no group'   => ['C0S-F',                                  \&App::Asciio::Actions::ElementsManipulation::select_all_elements_by_words_no_group ],
 
 'Delete selected elements'           => [['000-Delete', '000-d'],                  \&App::Asciio::Actions::ElementsManipulation::delete_selected_elements              ],
+'Delete numbered connectors'         => ['C00-d',                                  \&App::Asciio::Actions::Elements::remove_numbered_connector_in_element              ],
 
 'Edit selected element'              => [['000-2button-press-1','000-Return'],     \&App::Asciio::Actions::ElementsManipulation::edit_selected_element, 0              ],
 'Edit selected element inline'       => [['C00-2button-press-1','0A0-Return'],     \&App::Asciio::Actions::ElementsManipulation::edit_selected_element, 1              ],

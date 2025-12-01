@@ -285,12 +285,16 @@ $self->set
 sub scale_connectors
 {
 my ($self, $connectors, $width, $height) = @_ ;
-my $round = sub { my ($num) = @_ ; return int(sprintf("%.0f", $num)) ; } ;
 
 for my $connector ($connectors->@*)
 	{
-	# :QQ: I set the magnification to 10000, which is more accurate and may provide better visual feedback to the user.
-	#		At the same time, the rounding function is replaced by round(round half up), so that the setting is more accurate.
+	# :QQ: Another problem here is that the default connector uses int for rounding is better.
+	#		But the numeric connector we defined needs to use round(round half up) for rounding
+	my $round = ($connector->{NAME} =~ /^\d+$/)
+		? sub { int(sprintf("%.0f", shift)) }
+		: sub { int(shift) } ;
+
+	# :QQ: I set the magnification to 10000, which is more accurate.
 	$connector->{X} = $round->($width  * $connector->{SCALE_X} / 10000) + $connector->{OFFSET_X} if ($connector->{SCALE_X} >= 0) ;
 	$connector->{Y} = $round->($height * $connector->{SCALE_Y} / 10000) + $connector->{OFFSET_Y} if ($connector->{SCALE_Y} >= 0) ;
 	}
@@ -410,18 +414,23 @@ sub add_connector
 my ($self, $connector) = @_ ;
 my ($x, $scale_x, $offset_x, $y, $scale_y, $offset_y, $name) = $connector->@* ;
 
-# :QQ: In the same element, there can only be one connector at the same position, right?
 my @conflicts = grep { $_->{NAME} eq $name
 		|| (
-			$_->{X}           == $x
-			&& $_->{SCALE_X}  == $scale_x
-			&& $_->{OFFSET_X} == $offset_x
-			&& $_->{Y}        == $y
-			&& $_->{SCALE_Y}  == $scale_y
-			&& $_->{OFFSET_Y} == $offset_y
+			(
+			($scale_x >= 0)
+				? ($_->{SCALE_X} == $scale_x && $_->{OFFSET_X} == $offset_x)
+				: ($_->{X} == $x)
+			)
+			&&
+			(
+			($scale_y >= 0)
+				? ($_->{SCALE_Y} == $scale_y && $_->{OFFSET_Y} == $offset_y)
+				: ($_->{Y} == $y)
+			)
 		   )
 	} $self->{CONNECTORS}->@* ;
-for (@conflicts) { $self->remove_connector($_->{NAME}) ; }
+
+return if @conflicts ;
 
 push $self->{CONNECTORS}->@*, 
 	{
