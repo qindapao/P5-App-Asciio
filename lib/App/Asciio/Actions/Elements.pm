@@ -467,89 +467,91 @@ my @numbered_connector_names = map { $_->{NAME} } grep { defined $_->{NAME} && $
 my $max_num = @numbered_connector_names ? max(@numbered_connector_names) : 0 ;
 $max_num++ ;
 
+my $round = sub { my ($num) = @_ ; return int(sprintf("%.0f", $num)) ; } ;
+
 # 4 outer corner vertices
 if ($self->{MOUSE_X} == $element->{X} - 1 && $self->{MOUSE_Y} == $element->{Y} - 1)
-{
-$element->add_connector([-1, -1, 0, -1, -1, 0, $max_num]) ;
-}
+	{
+	$element->add_connector([-1, -1, 0, -1, -1, 0, $max_num]) ;
+	}
 elsif ($self->{MOUSE_X} == $element->{X} + $element->{WIDTH} && $self->{MOUSE_Y} == $element->{Y} - 1)
-{
-$element->add_connector([0, 100, 0, -1, -1, 0, $max_num]) ;
-}
+	{
+	$element->add_connector([0, 10000, 0, -1, -1, 0, $max_num]) ;
+	}
 elsif ($self->{MOUSE_X} == $element->{X} - 1 && $self->{MOUSE_Y} == $element->{Y} + $element->{HEIGHT})
-{
-$element->add_connector([-1, -1, 0, 0, 100, 0, $max_num]) ;
-}
+	{
+	$element->add_connector([-1, -1, 0, 0, 10000, 0, $max_num]) ;
+	}
 elsif ($self->{MOUSE_X} == $element->{X} + $element->{WIDTH} && $self->{MOUSE_Y} == $element->{Y} + $element->{HEIGHT})
-{
-$element->add_connector([0, 100, 0, 0, 100, 0, $max_num]) ;
-}
+	{
+	$element->add_connector([0, 10000, 0, 0, 10000, 0, $max_num]) ;
+	}
 # 4 outer edges
 elsif ($self->{MOUSE_Y} == $element->{Y} -1)
-{
-my $scale_x = int(($self->{MOUSE_X} - $element->{X}) * 100 / $element->{WIDTH}) ;
-$element->add_connector([0, $scale_x, 1, -1, -1, 0, $max_num]) ;
-}
+	{
+	my $scale_x = $round->(($self->{MOUSE_X} - $element->{X}) * 10000 / $element->{WIDTH}) ;
+	$element->add_connector([0, $scale_x, 0, -1, -1, 0, $max_num]) ;
+	}
 elsif ($self->{MOUSE_Y} == $element->{Y} + $element->{HEIGHT})
-{
-my $scale_x = int(($self->{MOUSE_X} - $element->{X}) * 100 / $element->{WIDTH}) ;
-$element->add_connector([0, $scale_x, 1, 0, 100, 0, $max_num]) ;
-}
+	{
+	my $scale_x = $round->(($self->{MOUSE_X} - $element->{X}) * 10000 / $element->{WIDTH}) ;
+	$element->add_connector([0, $scale_x, 0, 0, 10000, 0, $max_num]) ;
+	}
 elsif ($self->{MOUSE_X} == $element->{X} -1)
-{
-my $scale_y = int(($self->{MOUSE_Y} - $element->{Y}) * 100 / $element->{HEIGHT}) ;
-$element->add_connector([-1, -1, 0, 0, $scale_y, 1, $max_num]) ;
-}
+	{
+	my $scale_y = $round->(($self->{MOUSE_Y} - $element->{Y}) * 10000 / $element->{HEIGHT}) ;
+	$element->add_connector([-1, -1, 0, 0, $scale_y, 0, $max_num]) ;
+	}
 elsif ($self->{MOUSE_X} == $element->{X} + $element->{WIDTH})
-{
-my $scale_y = int(($self->{MOUSE_Y} - $element->{Y}) * 100 / $element->{HEIGHT}) ;
-$element->add_connector([0, 100, 0, 0, $scale_y, 1, $max_num]) ;
-}
+	{
+	my $scale_y = $round->(($self->{MOUSE_Y} - $element->{Y}) * 10000 / $element->{HEIGHT}) ;
+	$element->add_connector([0, 10000, 0, 0, $scale_y, 0, $max_num]) ;
+	}
 # 4 inner vertices of the element
 elsif ($self->{MOUSE_X} == $element->{X} && $self->{MOUSE_Y} == $element->{Y})
-{
-$element->add_connector([0, -1, 0, 0, -1, 0, $max_num]) ;
-}
+	{
+	$element->add_connector([0, -1, 0, 0, -1, 0, $max_num]) ;
+	}
 elsif ($self->{MOUSE_X} == $element->{X} + $element->{WIDTH} - 1 && $self->{MOUSE_Y} == $element->{Y})
-{
-$element->add_connector([0, 100, -1, 0, -1, 0, $max_num]) ;
-}
+	{
+	$element->add_connector([0, 10000, -1, 0, -1, 0, $max_num]) ;
+	}
 elsif ($self->{MOUSE_X} == $element->{X} && $self->{MOUSE_Y} == $element->{Y} + $element->{HEIGHT} - 1)
-{
-$element->add_connector([0, -1, 0, 0, 100, -1, $max_num]) ;
-}
+	{
+	$element->add_connector([0, -1, 0, 0, 10000, -1, $max_num]) ;
+	}
 elsif ($self->{MOUSE_X} == $element->{X} + $element->{WIDTH} - 1 && $self->{MOUSE_Y} == $element->{Y} + $element->{HEIGHT} - 1)
-{
-$element->add_connector([0, 100, -1, 0, 100, -1, $max_num]) ;
-}
+	{
+	$element->add_connector([0, 10000, -1, 0, 10000, -1, $max_num]) ;
+	}
 # 4 inner edges of the element
 elsif ($self->{MOUSE_X} == $element->{X})
-{
-my $scale_y = int(($self->{MOUSE_Y} - $element->{Y}) * 100 / $element->{HEIGHT}) ;
-$element->add_connector([0, -1, 0, 0, $scale_y, 1, $max_num]) ;
-}
+	{
+	my $scale_y = $round->(($self->{MOUSE_Y} - $element->{Y}) * 10000 / $element->{HEIGHT}) ;
+	$element->add_connector([0, -1, 0, 0, $scale_y, 0, $max_num]) ;
+	}
 elsif ($self->{MOUSE_Y} == $element->{Y})
-{
-my $scale_x = int(($self->{MOUSE_X} - $element->{X}) * 100 / $element->{WIDTH}) ;
-$element->add_connector([0, $scale_x, 1, 0, -1, 0, $max_num]) ;
-}
+	{
+	my $scale_x = $round->(($self->{MOUSE_X} - $element->{X}) * 10000 / $element->{WIDTH}) ;
+	$element->add_connector([0, $scale_x, 0, 0, -1, 0, $max_num]) ;
+	}
 elsif ($self->{MOUSE_X} == $element->{X} + $element->{WIDTH} - 1)
-{
-my $scale_y = int(($self->{MOUSE_Y} - $element->{Y}) * 100 / $element->{HEIGHT}) ;
-$element->add_connector([0, 100, -1, 0, $scale_y, 1, $max_num]) ;
-}
+	{
+	my $scale_y = $round->(($self->{MOUSE_Y} - $element->{Y}) * 10000 / $element->{HEIGHT}) ;
+	$element->add_connector([0, 10000, -1, 0, $scale_y, 0, $max_num]) ;
+	}
 elsif ($self->{MOUSE_Y} == $element->{Y} + $element->{HEIGHT} - 1)
-{
-my $scale_x = int(($self->{MOUSE_X} - $element->{X}) * 100 / $element->{WIDTH}) ;
-$element->add_connector([0, $scale_x, 1, 0, 100, -1, $max_num]) ;
-}
+	{
+	my $scale_x = $round->(($self->{MOUSE_X} - $element->{X}) * 10000 / $element->{WIDTH}) ;
+	$element->add_connector([0, $scale_x, 0, 0, 10000, -1, $max_num]) ;
+	}
 # Inside the element
 else
-{
-my $scale_x = int(($self->{MOUSE_X} - $element->{X}) * 100 / $element->{WIDTH}) ;
-my $scale_y = int(($self->{MOUSE_Y} - $element->{Y}) * 100 / $element->{HEIGHT}) ;
-$element->add_connector([0, $scale_x, 1, 0, $scale_y, 1, $max_num]) ;
-}
+	{
+	my $scale_x = $round->(($self->{MOUSE_X} - $element->{X}) * 10000 / $element->{WIDTH}) ;
+	my $scale_y = $round->(($self->{MOUSE_Y} - $element->{Y}) * 10000 / $element->{HEIGHT}) ;
+	$element->add_connector([0, $scale_x, 0, 0, $scale_y, 0, $max_num]) ;
+	}
 
 my $connectors = $element->scale_connectors($element->{CONNECTORS}, $element->{WIDTH}, $element->{HEIGHT}) ;
 $element->{CONNECTORS} = $connectors ;
