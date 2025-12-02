@@ -57,10 +57,10 @@ return $is_inside;
 #   $existing_points : optional arrayref of existing points (appended to, duplicates skipped)
 #   $x_threshold     : The abscissa threshold means that coordinates are 
 #						generated only when the abscissa difference exceeds the threshold.
-#						Can be a value or a sub
+#						Can be a value or a sub(Use interpolation index as parameter)
 #   $y_threshold     : The ordinate threshold means that coordinates are
 #						generated only when the ordinate difference exceeds the threshold.
-#						Can be a value or a sub
+#						Can be a value or a sub(Use interpolation index as parameter)
 #
 # Returns:
 #   list of [$x,$y] points

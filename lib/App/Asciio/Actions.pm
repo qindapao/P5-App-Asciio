@@ -32,6 +32,7 @@ if($self->{USE_BINDINGS_COMPLETION})
 	
 	my $max_length = 0 ;
 	
+	# :QQ: NO_COMPLETION => 1 The operation of the option does not appear in the key prompt completion
 	$self->{BINDINGS_COMPLETION} = 
 			[
 			map
@@ -42,7 +43,11 @@ if($self->{USE_BINDINGS_COMPLETION})
 				$max_length = $length if $length > $max_length ;
 				$completion ;
 				}
-				sort grep { ! exists $reserved{$_} } keys $self->{CURRENT_ACTIONS}->%*
+				sort grep
+					{
+					! exists $reserved{$_} 
+					&& ! ($self->{CURRENT_ACTIONS}{$_}{OPTIONS}{NO_COMPLETION})
+					} keys $self->{CURRENT_ACTIONS}->%*
 			] ;
 	
 	$self->{BINDINGS_COMPLETION_LENGTH} = $max_length ;
