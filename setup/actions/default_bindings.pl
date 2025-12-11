@@ -918,6 +918,32 @@ TOP_LEVEL_GROUP
 	# 'find Mouse drag canvas'   => [ 'C00-motion_notify',                     \&App::Asciio::Actions::Mouse::mouse_drag_canvas  ],
 	),
 
+'image box ->' => GROUP
+	(
+	SHORTCUTS => '00S-I',
+	
+	'image box freeze'              => ['000-f', \&App::Asciio::Actions::Elements::freeze_selected_elements     ],
+	'image box unfreeze'            => ['000-u', \&App::Asciio::Actions::Elements::thaw_selected_elements       ],
+	'image box inserted from file'  => ['000-i', \&App::Asciio::GTK::Asciio::Actions::File::open_image          ],
+	
+	'image box visual controls ->'  => ['000-v', ACTION_GROUP('visual')                                         ],
+	),
+	
+'group_visual' => GROUP
+	(
+	SHORTCUTS   => 'group_visual',
+	# ENTER_GROUP => sub {},
+	ESCAPE_KEYS => [ '000-v', '000-Escape' ],
+		
+	# 'image box visual controls escape'  => ['000-v',      sub {}                                                        ],
+	# 'image box visual controls escape2' => ['000-Escape', sub {}                                                        ],
+	'image box increase gray scale'     => ['000-g',      \&App::Asciio::Actions::Box::image_box_change_gray_scale, 0.1 ],
+	'image box decrease gray scale'     => ['00S-G',      \&App::Asciio::Actions::Box::image_box_change_gray_scale, -0.1],
+	'image box increase alpha'          => ['000-a',      \&App::Asciio::Actions::Box::image_box_change_alpha, 0.1      ],
+	'image box decrease alpha'          => ['00S-A',      \&App::Asciio::Actions::Box::image_box_change_alpha, -0.1     ],
+	'image box revert to default'       => ['000-o',      \&App::Asciio::Actions::Box::image_box_revert_to_default_image],
+	),
+
 CONTEXT_MENU('Asciio context_menu'       => 'as_context_menu', \&App::Asciio::Actions::Asciio::context_menu                ),
 CONTEXT_MENU('Box context_menu'          => 'bo_context_menu', \&App::Asciio::Actions::Box::context_menu                   ),
 CONTEXT_MENU('Multi_wirl context_menu'   => 'mw_context_menu', \&App::Asciio::Actions::Multiwirl::multi_wirl_context_menu  ),
@@ -944,6 +970,7 @@ use App::Asciio::Actions::ElementsManipulation ;
 use App::Asciio::Actions::ElementAttributes ;
 use App::Asciio::Actions::Eraser ;
 use App::Asciio::Actions::File ;
+use App::Asciio::GTK::Asciio::Actions::File ;
 use App::Asciio::Actions::Git ;
 use App::Asciio::Actions::Mouse ;
 use App::Asciio::Actions::Multiwirl ;
