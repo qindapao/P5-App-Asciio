@@ -6,6 +6,7 @@ use warnings ;
 use utf8 ;
 
 use App::Asciio::String ;
+use App::Asciio::Actions::ElementAttributes ;
 
 #----------------------------------------------------------------------------------------------
 
@@ -273,13 +274,43 @@ return @context_menu_entries ;
 
 sub interactive_add_section
 {
-my ($self) = @_ ;
+my ($self, $is_connection_not_allowed) = @_ ;
+
+# :QQ: Add a line segment without connection attributes for our manual and
+#		convenient drawing of tables (with cross mode)
+if($is_connection_not_allowed)
+	{
+	$self->deselect_all_elements() ;
+	my $element = new App::Asciio::stripes::section_wirl_arrow
+		({
+		POINTS => [[0, 0, 'up']],
+		DIRECTION => 'left',
+		ALLOW_DIAGONAL_LINES => 0,
+		EDITABLE => 1,
+		RESIZABLE => 1,
+		});
+
+	$element->{NAME} = 'line';
+	$element->enable_autoconnect(0);
+	$element->allow_connection('start', 0);
+	$element->allow_connection('end', 0);
+	$self->add_elements_no_connection($element);
+	@$element{'X', 'Y', 'SELECTED'} = ($self->{MOUSE_X}, $self->{MOUSE_Y}, 1) ;
+
+	# :QQ: Here we use the arrow type saved by the user in COPIED_ATTRIBUTES
+	#		instead of using the default type
+	App::Asciio::Actions::ElementAttributes::paste_attributes($self, $element) ;
+	return ;
+	}
 
 my @selected_elements = $self->get_selected_elements(1) ;
 
 if(0 == @selected_elements)
 	{
-	App::Asciio::Actions::Elements::add_element($self, ['Asciio/wirl_arrow', 0]),
+	my $element = App::Asciio::Actions::Elements::add_element($self, ['Asciio/wirl_arrow', 0]) ;
+	# :QQ: Here we use the arrow type saved by the user in COPIED_ATTRIBUTES
+	#		instead of using the default type
+	App::Asciio::Actions::ElementAttributes::paste_attributes($self, $element) ;
 	}
 elsif(1 == @selected_elements)
 	{
@@ -312,6 +343,9 @@ elsif(1 == @selected_elements)
 		
 		$self->deselect_all_elements() ;
 		$self->select_elements(1, $arrow) ;
+		# :QQ: Here we use the arrow type saved by the user in COPIED_ATTRIBUTES
+		#		instead of using the default type
+		App::Asciio::Actions::ElementAttributes::paste_attributes($self, $element) ;
 		$self->update_display() ;
 		}
 	}

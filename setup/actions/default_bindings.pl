@@ -93,7 +93,8 @@ register_action_handlers
 'Arrow to mouse'                     => ['CA0-motion_notify',                      \&App::Asciio::Actions::Arrow::interactive_to_mouse                                 ], 
 'Arrow mouse change direction'       => ['CA0-2button-press-1',                    \&App::Asciio::Actions::Arrow::change_arrow_direction                               ],      
 'Arrow change direction'             => ['CA0-d',                                  \&App::Asciio::Actions::Arrow::interactive_change_arrow_direction                   ],      
-'Wirl arrow add section'             => ['CA0-button-press-1',                     \&App::Asciio::Actions::Multiwirl::interactive_add_section                          ],
+'Wirl arrow add section'             => ['CA0-button-press-1',                     \&App::Asciio::Actions::Multiwirl::interactive_add_section, 0                       ],
+'Wirl arrow add section no connect'  => ['CA0-button-press-3',                     \&App::Asciio::Actions::Multiwirl::interactive_add_section, 1                       ],
 'Wirl arrow insert flex point'       => ['CA0-button-press-2',                     \&App::Asciio::Actions::Multiwirl::insert_wirl_arrow_section                        ],
 
 'Mouse motion'                       => ['000-motion_notify',                      \&App::Asciio::Actions::Mouse::mouse_motion                                         ], 
