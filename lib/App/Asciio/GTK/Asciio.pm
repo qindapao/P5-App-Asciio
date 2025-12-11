@@ -15,6 +15,7 @@ use List::Util qw(min) ;
 use App::Asciio::GTK::Asciio::Selection ;
 use App::Asciio::GTK::Asciio::Pen ;
 use App::Asciio::GTK::Asciio::Find ;
+use App::Asciio::GTK::Asciio::stripes::image_box ;
 
 use App::Asciio::Cross ;
 use App::Asciio::Markup ;
@@ -796,6 +797,14 @@ else
 
 $foreground_color //= $self->get_color('element_foreground') ;
 
+# :QQ: The drawing of image boxes is not cached for the time being.
+#		I haven’t thought of a specific caching strategy yet.
+if ($element->isa('App::Asciio::GTK::Asciio::stripes::image_box'))
+	{
+	$self->draw_image_box_element($element, $gc, $character_width, $character_height, $background_color) ;
+	return ;
+	}
+
 my $color_set = $is_selected . '-'
 		. ($background_color // 'undef') . '-' . ($foreground_color // 'undef') . '-' 
 		. ($self->{OPAQUE_ELEMENTS} // 1) . '-' . ($self->{NUMBERED_OBJECTS} // 0) ; 
@@ -867,6 +876,7 @@ unless (defined $renderings)
 			}
 		}
 	
+	# :QQ: Do we allow freezing of ordinary elements? If allowed, draw_element_freeze_border also needs to be called
 	$renderings = $element->{CACHE}{RENDERING}{$color_set} = \@renderings ;
 	}
 
@@ -881,6 +891,63 @@ for my $rendering (@$renderings)
 	
 	$gc->paint;
 	}
+}
+
+# ------------------------------------------------------------------------------
+sub draw_image_box_element
+{
+my ($self, $element, $gc, $character_width, $character_height, $background_color) = @_ ;
+my ($pixbuf_width, $pixbuf_height) = (($element->{WIDTH} * $character_width), ($element->{HEIGHT} * $character_height)) ;
+
+my $loader = Gtk3::Gdk::PixbufLoader->new_with_type($element->{IMAGE_TYPE});
+$loader->write($element->{DRAW_IMAGE} // $element->{IMAGE});
+$loader->close();
+my $pixbuf = $loader->get_pixbuf();
+
+# GDK_INTERP_HYPER Better results but more computational overhead
+my $scaled_pixbuf = $pixbuf->scale_simple($pixbuf_width, $pixbuf_height, 'GDK_INTERP_BILINEAR');
+
+$gc->set_source_rgba(@{$background_color}, $self->{OPAQUE_ELEMENTS});
+Gtk3::Gdk::cairo_set_source_pixbuf($gc, $scaled_pixbuf, $element->{X} * $character_width, $element->{Y} * $character_height) ;
+$gc->paint() ;
+
+$self->draw_element_freeze_border($gc, $element, $character_width, $character_height) ;
+return ;
+}
+
+
+# ------------------------------------------------------------------------------
+
+sub draw_element_freeze_border
+{
+my ($self, $gc , $element, $character_width, $character_height) = @_ ;
+
+return unless $element->is_freeze_enabled() ;
+
+my $border_color ;
+
+if ($self->{IGNORE_ELEMENT_FREEZE})
+	{
+	$border_color = $self->get_color('freeze_ignore_border') ;
+	}
+else
+	{
+	$border_color = $self->get_color('frozen_elements_boarder') ;
+	}
+
+    $gc->set_source_rgb(@$border_color) ;
+    $gc->set_line_width(2) ;
+	$gc->set_dash(0, 2, 2) ;
+
+    $gc->rectangle
+		(
+        $element->{X} * $character_width,
+        $element->{Y} * $character_height,
+        $element->{WIDTH} * $character_width,
+        $element->{HEIGHT} * $character_height
+		) ;
+    $gc->stroke() ;
+	$gc->set_dash(0) ;
 }
 
 #-----------------------------------------------------------------------------

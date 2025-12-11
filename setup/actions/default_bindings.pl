@@ -379,6 +379,15 @@ register_action_handlers
 	'convert to a big text'     => ['00S-T',  \&App::Asciio::Actions::Elements::convert_selected_elements_to_text_element ], 
 	'convert to dots'           => ['00S-D',  \&App::Asciio::Actions::Elements::convert_selected_elements_to_dot_elements ], 
 	
+	'enable freeze elements'         => ['000-f',  \&App::Asciio::Actions::Elements::enable_freeze_elements               ], 
+	'disable freeze elements'        => ['00S-F',  \&App::Asciio::Actions::Elements::disable_freeze_elements              ], 
+	'toggle ignore freeze elements'  => ['000-i',  \&App::Asciio::Actions::Elements::toggle_ignore_elements_freeze        ], 
+	'image box increase gray scale'  => ['000-g',  \&App::Asciio::Actions::Box::image_box_change_gray_scale, 0.1          ], 
+	'image box decrease gray scale'  => ['00S-G',  \&App::Asciio::Actions::Box::image_box_change_gray_scale, -0.1         ], 
+	'image box increase alpha'       => ['000-h',  \&App::Asciio::Actions::Box::image_box_change_alpha, 0.1               ], 
+	'image box decrease alpha'       => ['00S-H',  \&App::Asciio::Actions::Box::image_box_change_alpha, -0.1              ], 
+	'image box revert to default'    => ['000-o',  \&App::Asciio::Actions::Box::image_box_revert_to_default_image         ], 
+	
 	'<< Box >>'                 => ['000-b', ACTION_GROUP('box_type_change')                                              ] ,
 	'<< Wirl Arrow >>'          => ['000-w', ACTION_GROUP('wirl_arrow_type_change')                                       ] ,
 	'<< Angled Arrow >>'        => ['000-a', ACTION_GROUP('angled_arrow_type_change')                                     ] ,

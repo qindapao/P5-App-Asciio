@@ -17,6 +17,7 @@ use Sereal qw(
 	) ;
 
 use Sereal::Encoder qw(SRL_SNAPPY SRL_ZLIB SRL_ZSTD) ;
+use App::Asciio::GTK::Asciio::stripes::image_box ;
 
 sub copy_to_clipboard
 {
@@ -145,11 +146,38 @@ for my $option (@clipboard_out_options)
 			}
 	}
 
-return if $invalid_flag ;
+if ($invalid_flag)
+	{
+    my ($image_data, $image_type) = read_clipboard_image() ;
+    if ($image_data)
+		{
+		my ($character_width, $character_height) = $self->get_character_size() ;
 
-$self->{CLIPBOARD} = Clone::clone(get_sereal_decoder()->decode($elements_serail)) ;
+		my $image_box = new App::Asciio::GTK::Asciio::stripes::image_box
+			({
+			NAME => 'image_box',
+			TEXT_ONLY => ' ',
+			TITLE => '',
+			EDITABLE => 0,
+			RESIZABLE => 1,
+			AUTO_SHRINK => 0,
+			CHARACTER_WIDTH => $character_width,
+			CHARACTER_HEIGHT => $character_height,
+			IMAGE => $image_data,
+			IMAGE_TYPE => $image_type,
+			});
 
-insert_from_clipboard($self, @args) ;
+		$self->add_element_at($image_box, $self->{MOUSE_X}, $self->{MOUSE_Y}) ;
+		$self->select_elements(1, $image_box) ;
+		$self->update_display() ;
+		}	
+	}
+else
+	{
+	$self->{CLIPBOARD} = Clone::clone(get_sereal_decoder()->decode($elements_serail)) ;
+	
+	insert_from_clipboard($self, @args) ;
+	}
 }
 
 #----------------------------------------------------------------------------------------------
@@ -271,6 +299,7 @@ else
 }
 
 #----------------------------------------------------------------------------------------------
+
 sub read_clipboard_raw_text
 {
 my ($option) = @_ ;
@@ -288,6 +317,48 @@ if ($^O eq 'MSWin32')
 else
 	{
 	return qx{xsel $option -o} ;
+	}
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub read_clipboard_image
+{
+if ($^O eq 'MSWin32')
+	{
+	my $ps_command = <<'END_PS';
+	$img = Get-Clipboard -Format Image;
+	if ($img) {
+		$ms = New-Object System.IO.MemoryStream;
+		$img.Save($ms, [System.Drawing.Imaging.ImageFormat]::Png);
+		$ms.Position = 0;
+		$bytes = $ms.ToArray();
+		[Convert]::ToBase64String($bytes)
+	}
+END_PS
+	
+	my $base64 = `powershell -Command "$ps_command"` ;
+	$base64 =~ s/\s+//g ;
+	return (undef, undef) unless $base64 ;
+	
+	my $image = decode_base64($base64) ;
+	return ($image, 'png') ;
+	}
+else
+	{
+	my $targets = qx{xclip -selection clipboard -t TARGETS -o} ;
+	if ($targets =~ /image\/jpeg/)
+		{
+		return (qx{xclip -selection clipboard -t image/jpeg -o}, 'jpeg') ;
+		}
+	elsif ($targets =~ /image\/png/)
+		{
+		return (qx{xclip -selection clipboard -t image/png -o}, 'png') ;
+		}
+	else
+		{
+		return (undef, undef) ;
+		}
 	}
 }
 

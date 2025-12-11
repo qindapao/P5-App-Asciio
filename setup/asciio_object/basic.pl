@@ -41,6 +41,8 @@ COLOR_SCHEMES => # asciio has two color schemes, and a binding to flip between t
 		prompt_foreground           => [0.85, 0.85, 0.85, 1.00],
 		find_current_highlight      => [0, 0, 1, 0.50],
 		find_other_highlight        => [0.90, 0.50, 0.90, 0.50],
+		frozen_elements_boarder     => [0.3, 0.6, 1.0],
+		freeze_ignore_border        => [0, 1, 0],
 		}, 
 	'system' =>
 		{
@@ -75,6 +77,8 @@ COLOR_SCHEMES => # asciio has two color schemes, and a binding to flip between t
 		prompt_foreground           => [0.00, 0.00, 0.00, 1.00],
 		find_current_highlight      => [0, 0, 1, 0.50],
 		find_other_highlight        => [0.90, 0.50, 0.90, 0.50],
+		frozen_elements_boarder     => [0.5, 0.5, 0.5],
+		freeze_ignore_border        => [0, 1, 0],
 		} 
 	},
 
@@ -154,4 +158,5 @@ PEN_CHARS_SETS           =>        # keys to inserted characters in pen mode
 					'1' => '┬', '2' => '┴', '3' => '┼',
 					},
 				],
+IGNORE_ELEMENT_FREEZE => 0, # Whether to ignore the frozen attribute of the element
 

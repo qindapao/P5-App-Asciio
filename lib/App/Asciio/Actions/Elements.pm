@@ -457,5 +457,54 @@ if(@selected_elements >= 1)
 
 #----------------------------------------------------------------------------------------------
 
+sub enable_freeze_elements
+{
+my ($self) = @_ ;
+
+my @selected_elements = $self->get_selected_elements(1) ;
+
+if(@selected_elements >= 1)
+	{
+	$self->create_undo_snapshot();
+	
+	$self->select_elements(0, @selected_elements) ;
+	
+	for(@selected_elements) { $_->enable_freeze(1) ; }
+	
+	$self->update_display() ;
+	}
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub disable_freeze_elements
+{
+my ($self) = @_ ;
+
+my @selected_elements = $self->get_selected_elements(1) ;
+
+if(@selected_elements >= 1)
+	{
+	$self->create_undo_snapshot() ;
+	
+	for(@selected_elements) { $_->enable_freeze(0) ; }
+	
+	$self->update_display() ;
+	}
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub toggle_ignore_elements_freeze
+{
+my ($self) = @_ ;
+
+$self->{IGNORE_ELEMENT_FREEZE} ^= 1 ;
+
+$self->update_display() ;
+}
+
+#----------------------------------------------------------------------------------------------
+
 1 ;
 
