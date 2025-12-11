@@ -1,0 +1,106 @@
+# Asciio image box
+
+Asciio is text-based, and the main purpose of inserting an image box is to make
+it a background image.
+
+Image boxes cannot be exported, and only space placeholders are exported. It
+has grayscale and transparency settings, making it ideal for use as a
+background when we create ascii art. In addition, the image box has a frozen
+attribute, which will be explained in detail below.
+
+Image boxes are often used together with `pen mode`.
+
+![image_box_example](image_box_example.gif)
+
+## Create image box
+
+### Create an image box from an image file
+
+| action                       | binding group                 | bingding    |
+|------------------------------|-------------------------------|-------------|
+| image box inserted from file | `<image box>>`(`<<Shift+I>>`) | `<<i>>`     |
+
+![image_box_insert_from_file](image_box_insert_from_file.gif)
+
+### Copy and paste the image to the canvas via the clipboard
+
+Under `Linux` system, we need to install the `xclip` tool first, and then copy
+an image to the clipboard through the following command.
+
+-  If the image is in `PNG` format then use the following command
+
+```bash
+xclip -selection clipboard -t image/png -i image.png
+```
+
+-  If the image is in `JGEG/JPG` format, then use the following command
+
+```bash
+xclip -selection clipboard -t image/jpeg -i image.jpg
+```
+
+Under the `Windows` system, we can directly use the system function to copy a
+picture.
+
+Then we use `Ctrl+v` directly in the canvas to paste the image into the canvas,
+and it will automatically become an image box element.
+
+![image_box_insert](image_box_insert.gif)
+
+## Image box related operations
+
+Image boxes, like ordinary boxes, support resizing and moving.
+
+![image_box_normal_operations](image_box_normal_operations.gif)
+
+Special operations for image boxes:
+
+| action                                    | binding                          |
+| ----------------------------------------- | -------------------------------- |
+| Enter image box group                     | `<<Shift+I>>`                    |
+| Enter image box visual controls sub group | `<<<v>>>`                        |
+
+image box visual controls sub group:
+
+| action                        | bingding       |
+|-------------------------------|----------------|
+| image box increase gray scale |  `<<g>>`       |
+| image box decrease gray scale |  `<<Shift-G>>` |
+| image box increase alpha      |  `<<a>>`       |
+| image box decrease alpha      |  `<<Shift-A>>` |
+| image box revert to default   |  `<<o>>`       |
+
+Through these operations, a color image can be turned into an image with
+different grayscale and transparency, which is more suitable for existing as
+a background.
+
+![image_box_special_operations](image_box_special_operations.gif)
+
+## image box freeze
+
+To make the image box better serve as the background and as a reference image
+for our design of ascii art, then it cannot be resized or moved. It cannot
+interfere with other elements created on top of it.
+
+Related operation groups about image box freezing:
+
+| action                         | binding group                 | bingding |
+|--------------------------------|-------------------------------|----------|
+| image box freeze               | `<image box>>`(`<<Shift+I>>`) | `<<f>>`  |
+| image box unfreeze             | `<image box>>`(`<<Shift+I>>`) | `<<u>>`  |
+| image box toggle ignore frozen | `<image box>>`(`<<Shift+I>>`) | `<<t>>`  |
+
+![image_box_freeze](image_box_freeze.gif)
+
+When an image box is frozen, it cannot be resized or moved. Then you will visually
+see a dotted border, indicating that this image box is frozen.
+
+If you want adjust the size and position of the frozen image box, you need to
+temporarily turn off the freezing effect, which is the role of the `<<Shift+I+t>>`
+operation. At this time, the frozen image boxes will display a green dotted border,
+and then we can operate them, cancel their frozen attributes or move and resize
+them. After the previous adjustments have been made, we can press `<<Shift+I+t>>`
+to let the freeze continue to take effect.
+
+>Currently only image boxes have properties that can be frozen.
+

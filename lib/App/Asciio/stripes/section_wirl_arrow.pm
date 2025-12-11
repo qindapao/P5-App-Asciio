@@ -1377,6 +1377,8 @@ sub is_over_element
 {
 my ($self, $element, $x, $y, $field, $element_offset_x, $element_offset_y, ) = @_ ;
 
+return 0 if !$self->{IGNORE_FROZEN_ELEMENTS} && $element->is_frozen() ;
+
 $field ||= 0 ;
 my $is_under = 0 ;
 

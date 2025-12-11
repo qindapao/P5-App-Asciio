@@ -17,6 +17,7 @@ use Sereal qw(
 	) ;
 
 use Sereal::Encoder qw(SRL_SNAPPY SRL_ZLIB SRL_ZSTD) ;
+use App::Asciio::GTK::Asciio::stripes::image_box ;
 
 sub copy_to_clipboard
 {
@@ -122,34 +123,81 @@ sub import_elements_from_system_clipboard
 {
 my ($self, @args) = @_ ;
 
+my $serialized_import_success = import_serialized_elements_from_system_clipboard($self, @args) ;
+
+unless($serialized_import_success)
+	{
+	import_image_from_system_clipboard($self) ;
+	}
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub import_image_from_system_clipboard
+{
+my ($self) = @_ ;
+
+my ($image_data, $image_type) = read_clipboard_image() ;
+if ($image_data)
+	{
+	my ($character_width, $character_height) = $self->get_character_size() ;
+	
+	my $image_box = new App::Asciio::GTK::Asciio::stripes::image_box
+		({
+		NAME => 'image_box',
+		TEXT_ONLY => ' ',
+		TITLE => '',
+		EDITABLE => 0,
+		RESIZABLE => 1,
+		AUTO_SHRINK => 0,
+		CHARACTER_WIDTH => $character_width,
+		CHARACTER_HEIGHT => $character_height,
+		IMAGE => $image_data,
+		IMAGE_TYPE => $image_type,
+		});
+	
+	$self->add_element_at($image_box, $self->{MOUSE_X}, $self->{MOUSE_Y}) ;
+	$self->select_elements(1, $image_box) ;
+	$self->update_display() ;
+	}	
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub import_serialized_elements_from_system_clipboard
+{
+my ($self, @args) = @_ ;
+
 my @clipboard_out_options=("-b", "-p") ;
-my $invalid_flag = 1 ;
-my $elements_serail ;
+my $serialized_data ;
 
 for my $option (@clipboard_out_options)
 	{
-		my $elements_base64 = read_clipboard_raw_text($option) ;
-		
-		# print STDERR "get data:==>" . $elements_base64 . "\n" ;
-		
-		$elements_serail = MIME::Base64::decode_base64($elements_base64) ;
-		
-		if(looks_like_sereal($elements_serail))
-			{
-			$invalid_flag = 0 ;
-			last;
-			}
-		else
-			{
-			print STDERR "data from $option is invalid!\n" ;
-			}
+	my $elements_base64 = read_clipboard_raw_text($option) ;
+	
+	my $decoded = MIME::Base64::decode_base64($elements_base64) ;
+	
+	if(looks_like_sereal($decoded))
+		{
+		$serialized_data = $decoded ;
+		last;
+		}
+	else
+		{
+		$self->{WARN}->("data from $option is invalid!\n") ;
+		}
 	}
 
-return if $invalid_flag ;
-
-$self->{CLIPBOARD} = Clone::clone(get_sereal_decoder()->decode($elements_serail)) ;
-
-insert_from_clipboard($self, @args) ;
+if (defined $serialized_data)
+	{
+	$self->{CLIPBOARD} = Clone::clone(get_sereal_decoder()->decode($serialized_data)) ;
+	insert_from_clipboard($self, @args) ;
+	return 1 ;
+	}
+else
+	{
+	return 0 ;
+	}
 }
 
 #----------------------------------------------------------------------------------------------
@@ -271,6 +319,7 @@ else
 }
 
 #----------------------------------------------------------------------------------------------
+
 sub read_clipboard_raw_text
 {
 my ($option) = @_ ;
@@ -289,6 +338,54 @@ else
 	{
 	return qx{xsel $option -o} ;
 	}
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub read_clipboard_image
+{
+return $^O eq 'MSWin32' ? read_clipboard_image_win() : read_clipboard_image_x11() ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub read_clipboard_image_win
+{
+my $ps_command = <<'END_PS' ;
+$img = Get-Clipboard -Format Image ;
+if ($img) {
+	$ms = New-Object System.IO.MemoryStream;
+	$img.Save($ms, [System.Drawing.Imaging.ImageFormat]::Png);
+	$ms.Position = 0;
+	$bytes = $ms.ToArray();
+	[Convert]::ToBase64String($bytes)
+}
+END_PS
+
+my $base64 = `powershell -Command "$ps_command"` ;
+$base64 =~ s/\s+//g ;
+return (undef, undef) unless $base64 ;
+
+my $image = decode_base64($base64) ;
+return ($image, 'png') ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub read_clipboard_image_x11
+{
+my $targets = qx{xclip -selection clipboard -t TARGETS -o} ;
+
+my %mime_map = ('image/jpeg' => 'jpeg', 'image/png'  => 'png',) ;
+
+for my $mime (keys %mime_map)
+	{
+	if ($targets =~ /\Q$mime\E/)
+		{
+		return (qx{xclip -selection clipboard -t $mime -o}, $mime_map{$mime}) ;
+		}
+	}
+return (undef, undef) ;
 }
 
 #----------------------------------------------------------------------------------------------

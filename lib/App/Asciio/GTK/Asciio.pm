@@ -15,6 +15,7 @@ use List::Util qw(min) ;
 use App::Asciio::GTK::Asciio::Selection ;
 use App::Asciio::GTK::Asciio::Pen ;
 use App::Asciio::GTK::Asciio::Find ;
+use App::Asciio::GTK::Asciio::stripes::image_box ;
 
 use App::Asciio::Cross ;
 use App::Asciio::Markup ;
@@ -766,38 +767,26 @@ sub draw_element
 {
 my ($self, $element, $element_index, $gc, $font_description, $character_width, $character_height) = @_ ;
 
-my $is_selected = $element->{SELECTED} // 0 ;
-   $is_selected = 1 if $is_selected > 0 ;
-
-my ($background_color, $foreground_color) =  $element->get_colors() ;
-
-if($is_selected)
+if ($element->isa('App::Asciio::GTK::Asciio::stripes::image_box'))
 	{
-	if(exists $element->{GROUP} and defined $element->{GROUP}[-1])
-		{
-		$background_color = $element->{GROUP}[-1]{GROUP_COLOR}[0]
-		}
-	else
-		{
-		$background_color = $self->get_color('selected_element_background');
-		}
+	$self->draw_image_box_element($element, $gc, $character_width, $character_height) ;
 	}
 else
 	{
-	unless (defined $background_color)
-		{
-		if(exists $element->{GROUP} and defined $element->{GROUP}[-1])
-			{
-			$background_color = $element->{GROUP}[-1]{GROUP_COLOR}[1]
-			}
-		else
-			{
-			$background_color = $self->get_color('element_background') ;
-			}
-		}
+	$self->draw_stripe_element($element, $element_index, $gc, $font_description, $character_width, $character_height) ;
 	}
+}
 
-$foreground_color //= $self->get_color('element_foreground') ;
+# ------------------------------------------------------------------------------
+
+sub draw_stripe_element
+{
+my ($self, $element, $element_index, $gc, $font_description, $character_width, $character_height) = @_ ;
+
+my $is_selected = $element->{SELECTED} // 0 ;
+$is_selected = 1 if $is_selected > 0 ;
+
+my ($background_color, $foreground_color) = $self->get_element_colors($element) ;
 
 my $color_set = $is_selected . '-'
 		. ($background_color // 'undef') . '-' . ($foreground_color // 'undef') . '-' 
@@ -884,6 +873,120 @@ for my $rendering (@$renderings)
 	
 	$gc->paint;
 	}
+}
+
+# ------------------------------------------------------------------------------
+
+sub draw_image_box_element
+{
+my ($self, $element, $gc, $character_width, $character_height) = @_ ;
+
+my $cache_key = $element->{WIDTH} . '-' . $element->{HEIGHT} . '-' . $character_width . $character_height ;
+my $rendering = $element->{CACHE}{RENDERING}{$cache_key} ;
+
+unless (defined $rendering)
+	{
+	delete $element->{CACHE}{RENDERING} ;
+	$rendering = $element->{CACHE}{RENDERING}{$cache_key} = $element->prepare_scaled_pixbuf($character_width, $character_height) ;
+	}
+
+Gtk3::Gdk::cairo_set_source_pixbuf($gc, $rendering, $element->{X} * $character_width, $element->{Y} * $character_height) ;
+
+$gc->paint() ;
+
+my $is_selected = ($element->{SELECTED} // 0) > 0 ;
+if ($is_selected)
+	{
+	my $alpha = 0.15 ;
+	my ($background_color, undef) = $self->get_element_colors($element) ;
+	$gc->set_source_rgba(@{$background_color}, $alpha) ;
+	$gc->rectangle(
+		$element->{X} * $character_width,
+		$element->{Y} * $character_height,
+		$element->{WIDTH}  * $character_width,
+		$element->{HEIGHT} * $character_height
+		) ;
+	$gc->fill() ;
+}
+
+$self->draw_element_freeze_border($gc, $element, $character_width, $character_height) ;
+return ;
+}
+
+# ------------------------------------------------------------------------------
+
+sub draw_element_freeze_border
+{
+my ($self, $gc , $element, $character_width, $character_height) = @_ ;
+
+return unless $element->is_frozen() ;
+
+my $border_color ;
+
+if ($self->{IGNORE_FROZEN_ELEMENTS})
+	{
+	$border_color = $self->get_color('ignored_frozen_border') ;
+	}
+else
+	{
+	$border_color = $self->get_color('frozen_elements_border') ;
+	}
+
+$gc->set_source_rgb(@$border_color) ;
+$gc->set_line_width(2) ;
+$gc->set_dash(0, 2, 2) ;
+
+$gc->rectangle
+	(
+	$element->{X} * $character_width,
+	$element->{Y} * $character_height,
+	$element->{WIDTH} * $character_width,
+	$element->{HEIGHT} * $character_height
+	) ;
+$gc->stroke() ;
+$gc->set_dash(0) ;
+}
+
+#-----------------------------------------------------------------------------
+
+sub get_element_colors
+{
+my ($self, $element) = @_ ;
+
+my $is_selected = $element->{SELECTED} // 0 ;
+   $is_selected = 1 if $is_selected > 0 ;
+
+my ($background_color, $foreground_color) =  $element->get_colors() ;
+
+if($is_selected)
+	{
+	if(exists $element->{GROUP} and defined $element->{GROUP}[-1])
+		{
+		$background_color = $element->{GROUP}[-1]{GROUP_COLOR}[0]
+		}
+	else
+		{
+		$background_color = $self->get_color('selected_element_background');
+		}
+	}
+else
+	{
+	unless (defined $background_color)
+		{
+		if(exists $element->{GROUP} and defined $element->{GROUP}[-1])
+			{
+			$background_color = $element->{GROUP}[-1]{GROUP_COLOR}[1]
+			}
+		else
+			{
+			$background_color = $self->get_color('element_background') ;
+			}
+		}
+	}
+
+$foreground_color //= $self->get_color('element_foreground') ;
+
+return ($background_color, $foreground_color) ;
 }
 
 #-----------------------------------------------------------------------------

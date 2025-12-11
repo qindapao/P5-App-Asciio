@@ -569,7 +569,11 @@ my ($self, $state, @elements) = @_ ;
 
 my %groups_to_select ;
 
-for my $element (@elements) 
+my @not_frozen_elements = ($self->{IGNORE_FROZEN_ELEMENTS}) 
+						? @elements 
+						: grep { !$_->is_frozen() } @elements ;
+
+for my $element (@not_frozen_elements) 
 	{
 	if($state)
 		{
@@ -683,6 +687,8 @@ $element->{SELECTED} ;
 sub is_over_element
 {
 my ($self, $element, $x, $y, $field) = @_ ;
+
+return 0 if !$self->{IGNORE_FROZEN_ELEMENTS} && $element->is_frozen() ;
 
 $field //= 0 ;
 my $is_under = 0 ;

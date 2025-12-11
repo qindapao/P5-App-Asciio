@@ -41,6 +41,8 @@ COLOR_SCHEMES => # asciio has two color schemes, and a binding to flip between t
 		prompt_foreground           => [0.85, 0.85, 0.85, 1.00],
 		find_current_highlight      => [0, 0, 1, 0.50],
 		find_other_highlight        => [0.90, 0.50, 0.90, 0.50],
+		frozen_elements_border      => [0.3, 0.6, 1.0],
+		ignored_frozen_border       => [0, 1, 0],
 		}, 
 	'system' =>
 		{
@@ -75,6 +77,8 @@ COLOR_SCHEMES => # asciio has two color schemes, and a binding to flip between t
 		prompt_foreground           => [0.00, 0.00, 0.00, 1.00],
 		find_current_highlight      => [0, 0, 1, 0.50],
 		find_other_highlight        => [0.90, 0.50, 0.90, 0.50],
+		frozen_elements_border      => [0.5, 0.5, 0.5],
+		ignored_frozen_border       => [0, 1, 0],
 		} 
 	},
 
