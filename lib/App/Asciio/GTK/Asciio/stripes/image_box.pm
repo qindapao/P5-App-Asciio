@@ -35,6 +35,16 @@ my $image = $element_definition->{IMAGE} ;
 my $image_type = $element_definition->{IMAGE_TYPE} ;
 my $pixbuf = $self->get_pixbuf($image, $image_type) ;
 
+eval
+	{
+	$pixbuf = $self->get_pixbuf($image, $image_type);
+	} ;
+if ($@ || !defined $pixbuf)
+	{
+	warn "Image decoding failed: $@";
+	return undef ;
+	}
+
 my ($character_width, $character_height) = ($element_definition->{CHARACTER_WIDTH}, $element_definition->{CHARACTER_HEIGHT}) ;
 my ($pixbuf_width, $pixbuf_height) = ($pixbuf->get_width(), $pixbuf->get_height()) ;
 my ($chars_x_cnt, $chars_y_cnt) = (int($pixbuf_width / $character_width), int($pixbuf_height / $character_height)) ;
@@ -67,9 +77,8 @@ my ($self, $text_only, $title_text, $box_type, $end_x, $end_y, $resizable,
 	$image, $draw_image, $image_type, $default_image_type,
 	$gray_scale_factor, $alpha_factor) = @_ ;
 
-App::Asciio::stripes::editable_box2::setup
+$self->SUPER::setup
 	(
-	$self,
 	$text_only,
 	$title_text,
 	$box_type,

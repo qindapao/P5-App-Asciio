@@ -147,6 +147,7 @@ lib/App/Asciio/GTK/Asciio/stripes/rhombus.pm
 lib/App/Asciio/GTK/Asciio/stripes/section_wirl_arrow.pm
 lib/App/Asciio/GTK/Asciio/stripes/wirl_arrow.pm
 lib/App/Asciio/GTK/Asciio/stripes/image_box.pm
+lib/App/Asciio/GTK/Asciio/Actions/File.pm
 
 setup/GTK/setup.ini
 setup/GTK/import_export/png.pl

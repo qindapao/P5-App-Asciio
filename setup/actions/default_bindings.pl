@@ -13,6 +13,7 @@ use App::Asciio::Actions::ElementsManipulation ;
 use App::Asciio::Actions::ElementAttributes ;
 use App::Asciio::Actions::Eraser ;
 use App::Asciio::Actions::File ;
+use App::Asciio::GTK::Asciio::Actions::File ;
 use App::Asciio::Actions::Git ;
 use App::Asciio::Actions::Mouse ;
 use App::Asciio::Actions::Multiwirl ;
@@ -382,6 +383,7 @@ register_action_handlers
 	'enable freeze elements'         => ['000-f',  \&App::Asciio::Actions::Elements::enable_freeze_elements               ], 
 	'disable freeze elements'        => ['00S-F',  \&App::Asciio::Actions::Elements::disable_freeze_elements              ], 
 	'toggle ignore freeze elements'  => ['000-i',  \&App::Asciio::Actions::Elements::toggle_ignore_elements_freeze        ], 
+	'image box inserted from file'   => ['00S-I',  \&App::Asciio::GTK::Asciio::Actions::File::open_image                  ], 
 	'image box increase gray scale'  => ['000-g',  \&App::Asciio::Actions::Box::image_box_change_gray_scale, 0.1          ], 
 	'image box decrease gray scale'  => ['00S-G',  \&App::Asciio::Actions::Box::image_box_change_gray_scale, -0.1         ], 
 	'image box increase alpha'       => ['000-h',  \&App::Asciio::Actions::Box::image_box_change_alpha, 0.1               ], 

@@ -152,7 +152,7 @@ if ($invalid_flag)
     if ($image_data)
 		{
 		my ($character_width, $character_height) = $self->get_character_size() ;
-
+		
 		my $image_box = new App::Asciio::GTK::Asciio::stripes::image_box
 			({
 			NAME => 'image_box',
@@ -166,7 +166,9 @@ if ($invalid_flag)
 			IMAGE => $image_data,
 			IMAGE_TYPE => $image_type,
 			});
-
+		
+		return unless defined $image_box ;
+		
 		$self->add_element_at($image_box, $self->{MOUSE_X}, $self->{MOUSE_Y}) ;
 		$self->select_elements(1, $image_box) ;
 		$self->update_display() ;

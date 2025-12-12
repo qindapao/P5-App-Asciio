@@ -12,6 +12,16 @@ explained in detail below.
 
 ## Create image box
 
+### Create an image box from an image file
+
+| action                       | binding group                 | bingding    |
+|------------------------------|-------------------------------|-------------|
+| image box inserted from file | `<<element leader>>`(`<<e>>`) | `<<00S-I>>` |
+
+![image_box_insert_from_file](image_box_insert_from_file.gif)
+
+### Copy and paste the image to the canvas via the clipboard
+
 Under `Linux` system, we need to install the `xclip` tool first, and then copy
 an image to the clipboard through the following command.
 
