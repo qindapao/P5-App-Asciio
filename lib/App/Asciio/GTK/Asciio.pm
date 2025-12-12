@@ -797,8 +797,6 @@ else
 
 $foreground_color //= $self->get_color('element_foreground') ;
 
-# :QQ: The drawing of image boxes is not cached for the time being.
-#		I haven’t thought of a specific caching strategy yet.
 if ($element->isa('App::Asciio::GTK::Asciio::stripes::image_box'))
 	{
 	$self->draw_image_box_element($element, $gc, $character_width, $character_height, $background_color) ;
@@ -897,24 +895,37 @@ for my $rendering (@$renderings)
 sub draw_image_box_element
 {
 my ($self, $element, $gc, $character_width, $character_height, $background_color) = @_ ;
-my ($pixbuf_width, $pixbuf_height) = (($element->{WIDTH} * $character_width), ($element->{HEIGHT} * $character_height)) ;
 
-my $loader = Gtk3::Gdk::PixbufLoader->new_with_type($element->{IMAGE_TYPE});
-$loader->write($element->{DRAW_IMAGE} // $element->{IMAGE});
-$loader->close();
-my $pixbuf = $loader->get_pixbuf();
+my $cache_key = $element->{WIDTH} . '-' . $element->{HEIGHT} . '-' . $character_width . $character_height ;
+my $rendering = $element->{CACHE}{RENDERING}{$cache_key} ;
 
-# GDK_INTERP_HYPER Better results but more computational overhead
-my $scaled_pixbuf = $pixbuf->scale_simple($pixbuf_width, $pixbuf_height, 'GDK_INTERP_BILINEAR');
+unless (defined $rendering)
+	{
+	delete $element->{CACHE}{RENDERING} ;
+	$rendering = $element->{CACHE}{RENDERING}{$cache_key} = $element->prepare_scaled_pixbuf($character_width, $character_height) ;
+	}
 
-$gc->set_source_rgba(@{$background_color}, $self->{OPAQUE_ELEMENTS});
-Gtk3::Gdk::cairo_set_source_pixbuf($gc, $scaled_pixbuf, $element->{X} * $character_width, $element->{Y} * $character_height) ;
+Gtk3::Gdk::cairo_set_source_pixbuf($gc, $rendering, $element->{X} * $character_width, $element->{Y} * $character_height) ;
+
 $gc->paint() ;
+
+my $is_selected = ($element->{SELECTED} // 0) > 0 ;
+if ($is_selected)
+	{
+	my $alpha = 0.15 ;
+	$gc->set_source_rgba(@{$background_color}, $alpha) ;
+	$gc->rectangle(
+		$element->{X} * $character_width,
+		$element->{Y} * $character_height,
+		$element->{WIDTH}  * $character_width,
+		$element->{HEIGHT} * $character_height
+		) ;
+	$gc->fill() ;
+}
 
 $self->draw_element_freeze_border($gc, $element, $character_width, $character_height) ;
 return ;
 }
-
 
 # ------------------------------------------------------------------------------
 
@@ -935,19 +946,19 @@ else
 	$border_color = $self->get_color('frozen_elements_boarder') ;
 	}
 
-    $gc->set_source_rgb(@$border_color) ;
-    $gc->set_line_width(2) ;
-	$gc->set_dash(0, 2, 2) ;
+$gc->set_source_rgb(@$border_color) ;
+$gc->set_line_width(2) ;
+$gc->set_dash(0, 2, 2) ;
 
-    $gc->rectangle
-		(
-        $element->{X} * $character_width,
-        $element->{Y} * $character_height,
-        $element->{WIDTH} * $character_width,
-        $element->{HEIGHT} * $character_height
-		) ;
-    $gc->stroke() ;
-	$gc->set_dash(0) ;
+$gc->rectangle
+	(
+	$element->{X} * $character_width,
+	$element->{Y} * $character_height,
+	$element->{WIDTH} * $character_width,
+	$element->{HEIGHT} * $character_height
+	) ;
+$gc->stroke() ;
+$gc->set_dash(0) ;
 }
 
 #-----------------------------------------------------------------------------

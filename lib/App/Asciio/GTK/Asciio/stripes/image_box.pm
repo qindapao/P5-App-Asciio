@@ -52,7 +52,6 @@ $self->setup
 	undef,
 	$image_type,
 	$image_type,
-	0,
 	1,
 	1,
 	) ;
@@ -63,7 +62,10 @@ return $self ;
 #-----------------------------------------------------------------------------
 sub setup
 {
-my ($self, $text_only, $title_text, $box_type, $end_x, $end_y, $resizable, $editable, $auto_shrink, $image, $draw_image, $image_type, $default_image_type, $freeze, $gray_scale_factor, $alpha_factor) = @_ ;
+my ($self, $text_only, $title_text, $box_type, $end_x, $end_y, $resizable,
+	$editable, $auto_shrink,
+	$image, $draw_image, $image_type, $default_image_type,
+	$gray_scale_factor, $alpha_factor) = @_ ;
 
 App::Asciio::stripes::editable_box2::setup
 	(
@@ -82,7 +84,6 @@ $self->{DRAW_IMAGE} //= $draw_image ;
 $self->{IMAGE_TYPE} //= $image_type ;
 $self->{DEFAULT_IMAGE_TYPE} //= $default_image_type ;
 $self->{NAME} //= 'image_box' ;
-$self->{FREEZE} //= $freeze ;
 $self->{GRAY_SCALE_FACTOR} //= $gray_scale_factor ;
 $self->{ALPHA_FACTOR} //= $alpha_factor ;
 }
@@ -91,6 +92,8 @@ $self->{ALPHA_FACTOR} //= $alpha_factor ;
 sub enable_freeze
 {
 my ($self, $enable) = @_ ;
+
+delete $self->{CACHE}{RENDERING} ;
 
 if($enable)
 	{
@@ -169,6 +172,8 @@ sub switch_images
 {
 my ($self, $gray_scale_factor_step, $alpha_factor_step) = @_ ;
 
+delete $self->{CACHE}{RENDERING} ;
+
 if(defined $gray_scale_factor_step || defined $alpha_factor_step)
 	{
 	my $pixbuf = $self->get_pixbuf($self->{IMAGE}, $self->{IMAGE_TYPE}) ;
@@ -193,17 +198,31 @@ else
 }
 
 #-----------------------------------------------------------------------------
+
 sub get_pixbuf
 {
 my ($self, $image, $image_type) = @_ ;
 
-print("we in imagetype:$image_type\n") ;
+my $loader = Gtk3::Gdk::PixbufLoader->new_with_type($image_type) ;
 
-my $loader = Gtk3::Gdk::PixbufLoader->new_with_type($image_type);
+$loader->write($image) ;
+$loader->close() ;
+return $loader->get_pixbuf() ;
+}
 
-$loader->write($image);
-$loader->close();
-return $loader->get_pixbuf();
+#-----------------------------------------------------------------------------
+
+sub prepare_scaled_pixbuf
+{
+my ($self, $character_width, $character_height) = @_ ;
+
+my $pixbuf_width  = $self->{WIDTH}  * $character_width ;
+my $pixbuf_height = $self->{HEIGHT} * $character_height ;
+
+my $pixbuf = $self->get_pixbuf($self->{DRAW_IMAGE} // $self->{IMAGE}, $self->{IMAGE_TYPE}) ;
+my $scaled = $pixbuf->scale_simple($pixbuf_width, $pixbuf_height, 'GDK_INTERP_BILINEAR') ;
+
+return $scaled ;
 }
 
 #-----------------------------------------------------------------------------

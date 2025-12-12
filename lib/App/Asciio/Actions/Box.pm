@@ -93,6 +93,8 @@ $self->create_undo_snapshot() ;
 
 my @selected_elements = $self->get_selected_elements(1) ;
 
+warn "operation = $operation factor_step = $factor_step\n" ;
+
 for my $element (grep { ref($_) eq 'App::Asciio::GTK::Asciio::stripes::image_box' } @selected_elements)
 	{
 	if    ($operation eq 'gray_scale') { $element->switch_images($factor_step) ; } 
