@@ -246,7 +246,7 @@ register_action_handlers
 				(
 				['dash', '000-minus',   '-' ],
 				['dot' , '000-period',  '.' ],
-				['star', '000-asterix', '*' ],
+				['star', '00S-asterisk','*' ],
 				['o'   , '000-o',       'o' ],
 				['O'   , '00S-O',       'O' ],
 				),
@@ -256,7 +256,7 @@ register_action_handlers
 				(
 				['dash', '0A0-minus',   '-' ],
 				['dot' , '0A0-period',  '.' ],
-				['star', '0A0-asterix', '*' ],
+				['star', '0AS-asterisk','*' ],
 				['o'   , '0A0-o',       'o' ],
 				['O'   , '0AS-O',       'O' ],
 				),
