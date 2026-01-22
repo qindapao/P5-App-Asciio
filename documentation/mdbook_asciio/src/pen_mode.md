@@ -10,10 +10,12 @@ Pen mode provides character-by-character drawing with keyboard navigation.
 
 ## Mode Control
 
-| Operation         | Binding          | Description                   |
-| -----------       | ---------        | -------------                 |
-| Exit pen mode     | «Escape»         | Return to normal mode         |
-| Switch pen/eraser | «Ctrl+Shift+Tab» | Toggle between pen and eraser |
+| Operation                 | Binding          | Description                   |
+| ------------------------- | ---------------- | ----------------------------- |
+| Exit pen mode             | «Escape»         | Return to normal mode         |
+| Switch draw sub mode      | «i»              | draw char                     |
+| Switch eraser sub mode    | «e»              | delete element                |
+| Switch connector sub mode | «c»              | add connector to element      |
 
 ## Character Placement
 
@@ -43,7 +45,7 @@ Pen mode provides character-by-character drawing with keyboard navigation.
 | Left tab         | «Shift+Tab»    | Move to previous tab stop           |
 | Right tab        | «Tab»          | Move to next tab stop               |
 | Enter            | «Shift+Return» | Move to beginning of next line      |
-| Toggle direction | «Ctrl+Tab»     | Change auto-movement direction      |
+| Toggle direction | «d»            | Change auto-movement direction      |
 
 ## Character Deletion
 
@@ -54,26 +56,28 @@ Pen mode provides character-by-character drawing with keyboard navigation.
 
 ## Character Set Management
 
-| Operation              | Binding             | Description                                  |
-| -----------            | ---------           | -------------                                |
-| Next character set     | «Ctrl+Return»       | Switch to next character mapping             |
-| Previous character set | «Alt+Return»        | Switch to previous character mapping         |
-| Toggle help location   | «Ctrl+Shift+Return» | Change where character set help is displayed |
+| Operation              | Binding   | Description                                  |
+| -----------            | --------- | -------------                                |
+| Next character set     | «n»       | Switch to next character mapping             |
+| Previous character set | «p»       | Switch to previous character mapping         |
+| Toggle help location   | «l»       | Change where character set help is displayed |
 
 ## Direct Character Input
 
 Pen mode allows direct entry of alphanumeric and special characters. Simply type the character to place it at the cursor position.
 
 ### Lowercase Letters
-Type «a» through «z» to insert lowercase letters.
+When in draw sub mode, Type «a» through «z» to insert lowercase letters.
 
 ### Uppercase Letters
-Type «Shift+A» through «Shift+Z» to insert uppercase letters.
+When in draw sub mode, Type «Shift+A» through «Shift+Z» to insert uppercase letters.
 
 ### Numbers
-Type «0» through «9» to insert digits.
+When in draw sub mode, Type «0» through «9» to insert digits.
 
 ### Special Characters (Shifted)
+When in draw sub mode:
+
 - «Shift+Å» - Å
 - «Shift+Ä» - Ä
 - «Shift+Ö» - Ö
@@ -100,6 +104,8 @@ Type «0» through «9» to insert digits.
 - «Shift+>» - >
 
 ### Special Characters (Unshifted)
+When in draw sub mode:
+
 - «å» - å
 - «ä» - ä
 - «ö» - ö
@@ -117,7 +123,7 @@ Type «0» through «9» to insert digits.
 
 ## Mouse Operations
 
-| Operation | Binding | Description |
-|-----------|---------|-------------|
+| Operation  | Binding  | Description                      |
+|------------|----------|----------------------------------|
 | Pen motion | «motion» | Track mouse position in pen mode |
 
