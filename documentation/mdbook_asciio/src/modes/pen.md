@@ -30,7 +30,7 @@ If elements are selected prior to entering pen mode, those characters will be us
 - *press* a key on the keyboard
     - inserted the character
     - becomes the default character
-- *click* on a character
+- *right click* on a character
 
 
 ![pen_insert_single_char](pen_insert_single_char.gif)
@@ -60,15 +60,13 @@ When drawing ASCII art with many small elements, using the keyboard is more effi
 | pen mouse move left tab      | `«00S-ISO_Left_Tab»`          |
 | pen mouse move right tab     | `«000-Tab»`                   |
 
-![pen_keyboard_move](pen_keyboard_move.gif)
-
 ### Automatic cursor movement
 
 When using the keyboard, the cursor can be moved automatically after you insert a character.
 
 | action                         | binding         |
 | ----------------------------   | --------------- |
-| pen toggle insertion direction | `«C0S-Tab»`     |
+| pen toggle insertion direction | `«C00-d»`       |
 
 
 | shape                        | cursor movement    |
@@ -79,23 +77,14 @@ When using the keyboard, the cursor can be moved automatically after you insert 
 
 ![pen_char_insertion_direction](pen_char_insertion_direction.gif)
 
+### Eraser
 
+| action                           | binding         |
+| ----------------------------     | --------------- |
+| Enter eraser sub-operation group | `«C00-e»`       |
+| Exit eraser sub-operation group  | `«Escape»`      |
 
-# videos to remove or place in sub pages
+Exiting the eraser sub-operation group will return to the pen operation group.
 
-
-![pen_mode_enter_and_exit](pen_mode_enter_and_exit.gif)
-![pen_change_char_from_key_press](pen_change_char_from_key_press.gif)
-![pen_change_char_before_enter_pen_mode](pen_change_char_before_enter_pen_mode.gif)
-![pen_change_char_from_right_mouse_button](pen_change_char_from_right_mouse_button.gif)
-![pen_select_multi_char_input](pen_select_multi_char_input.gif)
-![pen_delete_elements](pen_delete_elements.gif)
-
-
-
-
-
-
-
-
+In the eraser sub-operation group, left-clicking the mouse deletes elements.
 

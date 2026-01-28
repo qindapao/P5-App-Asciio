@@ -577,27 +577,14 @@ TOP_LEVEL_GROUP
 	SHORTCUTS => '000-e',
 	
 	'Shrink box'                       => ['000-s',             \&App::Asciio::Actions::ElementsManipulation::shrink_box                   ],
-	
-	'copy element attributes'          => [['000-c', '000-y'],  \&App::Asciio::Actions::ElementAttributes::copy_attributes                 ],
-	'paste element attributes'         => ['000-p',             \&App::Asciio::Actions::ElementAttributes::paste_attributes                ],
-	'paste element control attributes' => ['00S-P',             \&App::Asciio::Actions::ElementAttributes::paste_control_attributes        ],
-	
-	'Make elements Unicode'            => ['000-u',             \&App::Asciio::Actions::ElementAttributes::make_selection_unicode, 1       ],
-	'Make elements not Unicode'        => ['00S-U',             \&App::Asciio::Actions::ElementAttributes::make_selection_unicode, 0       ],
-	
-	'convert to a text element'        => ['000-g',             \&App::Asciio::Actions::Elements::convert_selected_elements_to_text_element],
-	'convert to dots'                  => ['00S-G',             \&App::Asciio::Actions::Elements::convert_selected_elements_to_dot_elements],
-	
 	'enable elements cross'            => ['000-x',             \&App::Asciio::Actions::ElementsManipulation::set_elements_crossover, 1    ],
 	'disable elements cross'           => ['00S-X',             \&App::Asciio::Actions::ElementsManipulation::set_elements_crossover, 0    ],
-	
-	'freeze'                           => ['000-f',             \&App::Asciio::Actions::Elements::freeze_selected_elements                 ],
-	'freeze to background'             => ['00S-F',             \&App::Asciio::Actions::Elements::freeze_selected_elements_to_background   ],
-	'thaw'                             => ['000-t',             \&App::Asciio::Actions::Elements::thaw_selected_elements                   ],
-	
+	'attributes ->'                    => ['000-a', USE_GROUP('attributes')],
+	'element conversion ->'            => ['000-c', USE_GROUP('conversion')],
+	'freeze controls ->'               => ['000-f', USE_GROUP('freeze')],
 	'spellcheck ->'                    => ['00S-S', USE_GROUP('spellcheck')],
-	'change type ->'                   => ['00S-T', USE_GROUP('change_type')],
-	'element connector ->'             => ['00S-C', USE_GROUP('element_connector')],
+	'change type ->'                   => ['000-t', USE_GROUP('change_type')],
+	'add connectors ->'                => ['000-o', USE_GROUP('element_add_connectors')],
 	),
 	
 	'group_spellcheck' => GROUP
@@ -726,15 +713,44 @@ TOP_LEVEL_GROUP
 				),
 			),
 	
-	'group_element_connector' => GROUP
+	'group_element_add_connectors' => GROUP
 		(
-		SHORTCUTS           => 'group_element_connector',
+		SHORTCUTS           => 'group_element_add_connectors',
 		ESCAPE_KEYS         => ['00S-C', '000-Escape'],
 		
 		'add connector'     => ['000-button-press-1', \&App::Asciio::Actions::Elements::add_numbered_connector_to_element   ],
 		'remove connector'  => ['000-button-press-3', \&App::Asciio::Actions::Elements::remove_numbered_connector_in_element],
 		),
+
+	'group_attributes' => GROUP
+		(
+		SHORTCUTS => 'group_attributes',
+		
+		'copy element attributes'          => [['000-c', '000-y'],  \&App::Asciio::Actions::ElementAttributes::copy_attributes          ],
+		'paste element attributes'         => ['000-p',             \&App::Asciio::Actions::ElementAttributes::paste_attributes         ],
+		'paste element control attributes' => ['00S-P',             \&App::Asciio::Actions::ElementAttributes::paste_control_attributes ],
+		),
 	
+	'group_freeze' => GROUP
+		(
+		SHORTCUTS => 'group_freeze',
+		
+		'freeze'                           => ['000-f',             \&App::Asciio::Actions::Elements::freeze_selected_elements                 ],
+		'freeze to background'             => ['000-b',             \&App::Asciio::Actions::Elements::freeze_selected_elements_to_background   ],
+		'thaw'                             => ['000-t',             \&App::Asciio::Actions::Elements::thaw_selected_elements                   ],
+		),
+	
+	'group_conversion' => GROUP
+		(
+		SHORTCUTS => 'group_conversion',
+		
+		'Make elements Unicode'            => ['000-u',             \&App::Asciio::Actions::ElementAttributes::make_selection_unicode, 1       ],
+		'Make elements ASCII'              => ['000-a',             \&App::Asciio::Actions::ElementAttributes::make_selection_unicode, 0       ],
+		
+		'convert to a text element'        => ['000-t',             \&App::Asciio::Actions::Elements::convert_selected_elements_to_text_element],
+		'convert to dots'                  => ['000-d',             \&App::Asciio::Actions::Elements::convert_selected_elements_to_dot_elements],
+		),
+
 'selection ->' => GROUP
 	(
 	SHORTCUTS    => '000-s',
@@ -911,99 +927,88 @@ TOP_LEVEL_GROUP
 	ESCAPE_KEYS  => '000-Escape',
 	ESCAPE_GROUP => \&App::Asciio::GTK::Asciio::Pen::mouse_emulation_escape,
 	
-	'pen show bindings'        => ['000-h', sub{  $_[0]->show_binding_completions(1) ; }                           ],
-	'pen toggle direction'     => ['000-d', \&App::Asciio::GTK::Asciio::Pen::toggle_mouse_emulation_move_direction ],
-	'pen change help location' => ['000-l', \&App::Asciio::GTK::Asciio::Pen::switch_show_mapping_help_location     ],
-	'pen next char set'        => ['000-n', \&App::Asciio::GTK::Asciio::Pen::switch_next_character_sets, 1         ],
-	'pen previous char set'    => ['000-p', \&App::Asciio::GTK::Asciio::Pen::switch_previous_character_sets, 1     ],
+	'eraser ->'                             => ['C00-e', USE_GROUP('pen_eraser')   ],
+	'pen show bindings'                     => ['C00-b', sub{  $_[0]->show_binding_completions(1) ; }                           ],
+	'pen toggle direction'                  => ['C00-d', \&App::Asciio::GTK::Asciio::Pen::toggle_mouse_emulation_move_direction ],
+	'pen change key mapping panel location' => ['C00-c', \&App::Asciio::GTK::Asciio::Pen::switch_key_mapping_panel_location     ],
+	'pen next char set'                     => ['C00-n', \&App::Asciio::GTK::Asciio::Pen::switch_next_character_sets, 1         ],
+	'pen previous char set'                 => ['C00-p', \&App::Asciio::GTK::Asciio::Pen::switch_previous_character_sets, 1     ],
 	
-	'draw ->'                  => ['000-i', USE_GROUP('pen_draw_char')],
-	'eraser ->'                => ['000-e', USE_GROUP('pen_eraser')   ],
+	'pen insert or delete'   => ['000-button-press-1',   \&App::Asciio::GTK::Asciio::Pen::handle_primary_input, 0                               ],
+	'pen insert2 or delete2' => ['000-Return',           \&App::Asciio::GTK::Asciio::Pen::handle_primary_input, 0                               ],
+	'pen mouse button 3'     => ['000-button-press-3',   \&App::Asciio::GTK::Asciio::Pen::handle_secondary_input                                ],
+	
+	'pen left quick'         => ['0A0-h',                \&App::Asciio::GTK::Asciio::Pen::mouse_emulation_move_left_quick                       ],
+	'pen right quick'        => ['0A0-l',                \&App::Asciio::GTK::Asciio::Pen::mouse_emulation_move_right_quick                      ],
+	'pen up quick'           => ['0A0-k',                \&App::Asciio::GTK::Asciio::Pen::mouse_emulation_move_up_quick                         ],
+	'pen down quick'         => ['0A0-j',                \&App::Asciio::GTK::Asciio::Pen::mouse_emulation_move_down_quick                       ],
+	'pen left'               => [['000-Left', 'C00-h'],  \&App::Asciio::GTK::Asciio::Pen::mouse_emulation_move_left,        undef, { HIDE => 1 }],
+	'pen right'              => [['000-Right', 'C00-l'], \&App::Asciio::GTK::Asciio::Pen::mouse_emulation_move_right,       undef, { HIDE => 1 }],
+	'pen up'                 => [['000-Up', 'C00-k'],    \&App::Asciio::GTK::Asciio::Pen::mouse_emulation_move_up,          undef, { HIDE => 1 }],
+	'pen down'               => [['000-Down', 'C00-j'],  \&App::Asciio::GTK::Asciio::Pen::mouse_emulation_move_down,        undef, { HIDE => 1 }],
+	'pen space'              => ['000-space',            \&App::Asciio::GTK::Asciio::Pen::mouse_emulation_move_space,       undef, { HIDE => 1 }],
+	'pen left tab'           => ['00S-ISO_Left_Tab',     \&App::Asciio::GTK::Asciio::Pen::mouse_emulation_move_left_tab,    undef, { HIDE => 1 }],
+	'pen right tab'          => ['000-Tab',              \&App::Asciio::GTK::Asciio::Pen::mouse_emulation_move_right_tab,   undef, { HIDE => 1 }],
+	'pen enter'              => ['00S-Return',           \&App::Asciio::GTK::Asciio::Pen::mouse_emulation_press_enter_key,  undef, { HIDE => 1 }],
+	'pen delete dot'         => ['000-Delete',           \&App::Asciio::GTK::Asciio::Pen::pen_delete_element,               1,     { HIDE => 1 }],
+	'pen backspace dot'      => ['000-BackSpace',        \&App::Asciio::GTK::Asciio::Pen::pen_back_delete_element,          1,     { HIDE => 1 }],
+	
+	'pen motion'             => ['000-motion_notify',    \&App::Asciio::GTK::Asciio::Pen::pen_mouse_motion,                 undef, { HIDE => 1 }],
+	'pen release'            => ['000-button-release-1', \&App::Asciio::GTK::Asciio::Pen::pen_mouse_motion,                 undef, { HIDE => 1 }],
+	'pen release 3'          => ['000-button-release-3', \&App::Asciio::GTK::Asciio::Pen::pen_mouse_motion,                 undef, { HIDE => 1 }],
+	
+	
+	(map { "pen insert " . $_ => ["00S-" . $_, \&App::Asciio::GTK::Asciio::Pen::enter_then_move_mouse, [$_], { HIDE => 1 }] }('A'..'Z')),
+	(map { "pen insert " . $_ => ["000-" . $_, \&App::Asciio::GTK::Asciio::Pen::enter_then_move_mouse, [$_], { HIDE => 1 }] }('a'..'z', '0'..'9')),
+	(
+	map { "pen insert " . $_->[0] => ["00S-" . $_->[0], \&App::Asciio::GTK::Asciio::Pen::enter_then_move_mouse, [$_->[1]], { HIDE => 1 }]}
+		(
+		['Aring'      , 'Å'],
+		['Adiaeresis' , 'Ä'],
+		['Odiaeresis' , 'Ö'],
+		['asterisk'   , '*'],
+		['parenleft'  , '('],
+		['exclam'     , '!'],
+		['at'         , '@'],
+		['numbersign' , '#'],
+		['dollar'     , '$'],
+		['percent'    , '%'],
+		['asciicircum', '^'],
+		['ampersand'  , '&'],
+		['parenright' , ')'],
+		['underscore' , '_'],
+		['plus'       , '+'],
+		['braceleft'  , '{'],
+		['braceright' , '}'],
+		['colon'      , ':'],
+		['quotedbl'   , '"'],
+		['asciitilde' , '~'],
+		['bar'        , '|'],
+		['question'   , '?'],
+		['less'       , '<'],
+		['greater'    , '>'],
+		)
 	),
-	
-	'group_pen_draw_char' => GROUP
+	(
+	map { "pen insert " . $_->[0] => ["000-" . $_->[0], \&App::Asciio::GTK::Asciio::Pen::enter_then_move_mouse, [$_->[1]], { HIDE =>1 }]}
 		(
-		SHORTCUTS   => 'group_pen_draw_char',
-		ENTER_GROUP => [\&App::Asciio::GTK::Asciio::Pen::sub_mode_switch, 'draw'],
-		ESCAPE_KEYS => '000-Escape',
-		
-		'return to pen mode'     => ['000-Escape', sub{ $_[0]->run_actions_by_name("pen ->") ; }, undef , {HIDE => 1}],
-		
-		'pen insert or delete'   => ['000-button-press-1',   \&App::Asciio::GTK::Asciio::Pen::handle_primary_input, 0                               ],
-		'pen insert2 or delete2' => ['000-Return',           \&App::Asciio::GTK::Asciio::Pen::handle_primary_input, 0                               ],
-		'pen mouse button 3'     => ['000-button-press-3',   \&App::Asciio::GTK::Asciio::Pen::handle_secondary_input                                ],
-		
-		'pen left quick'         => ['0A0-h',                \&App::Asciio::GTK::Asciio::Pen::mouse_emulation_move_left_quick                       ],
-		'pen right quick'        => ['0A0-l',                \&App::Asciio::GTK::Asciio::Pen::mouse_emulation_move_right_quick                      ],
-		'pen up quick'           => ['0A0-k',                \&App::Asciio::GTK::Asciio::Pen::mouse_emulation_move_up_quick                         ],
-		'pen down quick'         => ['0A0-j',                \&App::Asciio::GTK::Asciio::Pen::mouse_emulation_move_down_quick                       ],
-		'pen left'               => [['000-Left', 'C00-h'],  \&App::Asciio::GTK::Asciio::Pen::mouse_emulation_move_left,        undef, { HIDE => 1 }],
-		'pen right'              => [['000-Right', 'C00-l'], \&App::Asciio::GTK::Asciio::Pen::mouse_emulation_move_right,       undef, { HIDE => 1 }],
-		'pen up'                 => [['000-Up', 'C00-k'],    \&App::Asciio::GTK::Asciio::Pen::mouse_emulation_move_up,          undef, { HIDE => 1 }],
-		'pen down'               => [['000-Down', 'C00-j'],  \&App::Asciio::GTK::Asciio::Pen::mouse_emulation_move_down,        undef, { HIDE => 1 }],
-		'pen space'              => ['000-space',            \&App::Asciio::GTK::Asciio::Pen::mouse_emulation_move_space,       undef, { HIDE => 1 }],
-		'pen left tab'           => ['00S-ISO_Left_Tab',     \&App::Asciio::GTK::Asciio::Pen::mouse_emulation_move_left_tab,    undef, { HIDE => 1 }],
-		'pen right tab'          => ['000-Tab',              \&App::Asciio::GTK::Asciio::Pen::mouse_emulation_move_right_tab,   undef, { HIDE => 1 }],
-		'pen enter'              => ['00S-Return',           \&App::Asciio::GTK::Asciio::Pen::mouse_emulation_press_enter_key,  undef, { HIDE => 1 }],
-		'pen delete dot'         => ['000-Delete',           \&App::Asciio::GTK::Asciio::Pen::pen_delete_element,               1,     { HIDE => 1 }],
-		'pen backspace dot'      => ['000-BackSpace',        \&App::Asciio::GTK::Asciio::Pen::pen_back_delete_element,          1,     { HIDE => 1 }],
-		
-		'pen motion'             => ['000-motion_notify',    \&App::Asciio::GTK::Asciio::Pen::pen_mouse_motion,                 undef, { HIDE => 1 }],
-		'pen release'            => ['000-button-release-1', \&App::Asciio::GTK::Asciio::Pen::pen_mouse_motion,                 undef, { HIDE => 1 }],
-		'pen release 3'          => ['000-button-release-3', \&App::Asciio::GTK::Asciio::Pen::pen_mouse_motion,                 undef, { HIDE => 1 }],
-		
-		
-		(map { "pen insert " . $_ => ["00S-" . $_, \&App::Asciio::GTK::Asciio::Pen::enter_then_move_mouse, [$_], { HIDE => 1 }] }('A'..'Z')),
-		(map { "pen insert " . $_ => ["000-" . $_, \&App::Asciio::GTK::Asciio::Pen::enter_then_move_mouse, [$_], { HIDE => 1 }] }('a'..'z', '0'..'9')),
-		(
-		map { "pen insert " . $_->[0] => ["00S-" . $_->[0], \&App::Asciio::GTK::Asciio::Pen::enter_then_move_mouse, [$_->[1]], { HIDE => 1 }]}
-			(
-			['Aring'      , 'Å'],
-			['Adiaeresis' , 'Ä'],
-			['Odiaeresis' , 'Ö'],
-			['asterisk'   , '*'],
-			['parenleft'  , '('],
-			['exclam'     , '!'],
-			['at'         , '@'],
-			['numbersign' , '#'],
-			['dollar'     , '$'],
-			['percent'    , '%'],
-			['asciicircum', '^'],
-			['ampersand'  , '&'],
-			['parenright' , ')'],
-			['underscore' , '_'],
-			['plus'       , '+'],
-			['braceleft'  , '{'],
-			['braceright' , '}'],
-			['colon'      , ':'],
-			['quotedbl'   , '"'],
-			['asciitilde' , '~'],
-			['bar'        , '|'],
-			['question'   , '?'],
-			['less'       , '<'],
-			['greater'    , '>'],
-			)
-		),
-		(
-		map { "pen insert " . $_->[0] => ["000-" . $_->[0], \&App::Asciio::GTK::Asciio::Pen::enter_then_move_mouse, [$_->[1]], { HIDE =>1 }]}
-			(
-			['aring'       , 'å' ] ,
-			['adiaeresis'  , 'ä' ] ,
-			['odiaeresis'  , 'ö' ] ,
-			['minus'       , '-' ] ,
-			['equal'       , '=' ] ,
-			['bracketleft' , '[' ] ,
-			['bracketright', ']' ] ,
-			['semicolon'   , ';' ] ,
-			['apostrophe'  , '\''] ,
-			['grave'       , '`' ] ,
-			['backslash'   , '\\'] ,
-			['slash'       , '/' ] ,
-			['comma'       , ',' ] ,
-			['period'      , '.' ] ,
-			)
-		),
-		),
+		['aring'       , 'å' ] ,
+		['adiaeresis'  , 'ä' ] ,
+		['odiaeresis'  , 'ö' ] ,
+		['minus'       , '-' ] ,
+		['equal'       , '=' ] ,
+		['bracketleft' , '[' ] ,
+		['bracketright', ']' ] ,
+		['semicolon'   , ';' ] ,
+		['apostrophe'  , '\''] ,
+		['grave'       , '`' ] ,
+		['backslash'   , '\\'] ,
+		['slash'       , '/' ] ,
+		['comma'       , ',' ] ,
+		['period'      , '.' ] ,
+		)
+	),
+	),
 	
 	'group_pen_eraser' => GROUP
 		(

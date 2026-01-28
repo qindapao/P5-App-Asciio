@@ -7,11 +7,11 @@ Characters sets are defined in *gui.pl`*.
 
 Character set bindings:
 
-| action                                    | binding         |
-|-------------------------------------------|-----------------|
-| Switch user-defined character set forward | `<<0A0-Enter>>` |
-| Switch user-defined character set back    | `<<C00-Enter>>` |
-| Toggle prompt keyboard position           | `<<C0S-Enter>>` |
+| action                                    | binding     |
+|-------------------------------------------|-------------|
+| Switch user-defined character set forward | `<<C00-n>>` |
+| Switch user-defined character set back    | `<<C00-p>>` |
+| Toggle prompt keyboard position           | `<<C00-c>>` |
 
 
 After switching to a user defined character set, a layout panel will show the mapping,

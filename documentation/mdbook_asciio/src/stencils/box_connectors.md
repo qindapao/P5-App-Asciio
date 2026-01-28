@@ -50,23 +50,23 @@ The class also has these functions:
 
 ## Interactive Connector Operations
 
+![box_connector_interactive](2026_01_22_box_connector_interactive.gif)
+
 ### Adding connectors
 
 - Select a single element
-- Enter [pen mode](modes/pen.md) with ***«P»***
-- Use `Ctrl + Tab` to switch to `pen connector mode`
-- mouse pointer turns to a solid circle
+- Enter element group with ***«e»***
+- Enter element add connectors sub group whie ***«C»***
 - Move the mouse to where you want to add a connector
 - Press the **left** mouse button to add a connector
+- Press ***«Escape»*** to exit group
 
 Connectors can be added up to on character outside the element.
-
-![box_connector_interactive](2026_01_22_box_connector_interactive.gif)
 
 ### Removing connectors 
 
 - start with the same steps as "Add connectors" above
-- Press the **right* mouse button to delete the connector
+- Press the **right** mouse button to delete the connector
 
 Some connectors can't be delete.
 

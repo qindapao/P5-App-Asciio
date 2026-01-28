@@ -13,9 +13,7 @@ Pen mode provides character-by-character drawing with keyboard navigation.
 | Operation                 | Binding          | Description                   |
 | ------------------------- | ---------------- | ----------------------------- |
 | Exit pen mode             | «Escape»         | Return to normal mode         |
-| Switch draw sub mode      | «i»              | draw char                     |
-| Switch eraser sub mode    | «e»              | delete element                |
-| Switch connector sub mode | «c»              | add connector to element      |
+| Switch eraser sub mode    | «Ctrl+e»         | delete element                |
 
 ## Character Placement
 
@@ -58,9 +56,9 @@ Pen mode provides character-by-character drawing with keyboard navigation.
 
 | Operation              | Binding   | Description                                  |
 | -----------            | --------- | -------------                                |
-| Next character set     | «n»       | Switch to next character mapping             |
-| Previous character set | «p»       | Switch to previous character mapping         |
-| Toggle help location   | «l»       | Change where character set help is displayed |
+| Next character set     | «Ctrl+n»  | Switch to next character mapping             |
+| Previous character set | «Ctrl+p»  | Switch to previous character mapping         |
+| Toggle help location   | «Ctrl+c»  | Change where character set help is displayed |
 
 ## Direct Character Input
 

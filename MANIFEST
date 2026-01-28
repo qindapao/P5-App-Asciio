@@ -188,7 +188,6 @@ setup/Text/asciio_object/basic.pl
 setup/Text/setup.ini
 
 # Examples
-examples/add_connector_to_element.asciio
 examples/asciio.ipynb
 examples/bindings.asciio
 examples/bindings_left_to_right.asciio
@@ -402,28 +401,25 @@ documentation/mdbook_asciio/src/modes/git_graph_feature_branch.gif
 documentation/mdbook_asciio/src/modes/git_graph_feature_branch.svg
 documentation/mdbook_asciio/src/modes/git_popup_menu.png
 documentation/mdbook_asciio/src/modes/merge_all_dots_into_a_box.gif
+documentation/mdbook_asciio/src/modes/mergin_dots.md
 documentation/mdbook_asciio/src/modes/pen.md
-documentation/mdbook_asciio/src/modes/pen_change_char_before_enter_pen_mode.gif
-documentation/mdbook_asciio/src/modes/pen_change_char_from_key_press.gif
-documentation/mdbook_asciio/src/modes/pen_change_char_from_right_mouse_button.gif
 documentation/mdbook_asciio/src/modes/pen_char_insertion_direction.gif
 documentation/mdbook_asciio/src/modes/pen_char_prompt_panel.gif
-documentation/mdbook_asciio/src/modes/pen_delete_elements.gif
 documentation/mdbook_asciio/src/modes/pen_draw_bear_head.gif
 documentation/mdbook_asciio/src/modes/pen_draw_book.gif
 documentation/mdbook_asciio/src/modes/pen_draw_disk.gif
 documentation/mdbook_asciio/src/modes/pen_draw_owl.gif
 documentation/mdbook_asciio/src/modes/pen_drawing_characters.gif
+documentation/mdbook_asciio/src/modes/pen_eraser.md
+documentation/mdbook_asciio/src/modes/pen_examples.md
 documentation/mdbook_asciio/src/modes/pen_insert_single_char.gif
-documentation/mdbook_asciio/src/modes/pen_keyboard_move.gif
-documentation/mdbook_asciio/src/modes/pen_mode_enter_and_exit.gif
 documentation/mdbook_asciio/src/modes/pen_newline_and_wrap.gif
-documentation/mdbook_asciio/src/modes/pen_select_multi_char_input.gif
 documentation/mdbook_asciio/src/modes/selection.md
 documentation/mdbook_asciio/src/modes/selection_basic.gif
 documentation/mdbook_asciio/src/modes/selection_polygon.gif
 documentation/mdbook_asciio/src/modes/slides.md
 documentation/mdbook_asciio/src/modes/split_elements_into_dots.gif
+documentation/mdbook_asciio/src/modes/user_character_set.md
 documentation/mdbook_asciio/src/modes_operation.md
 documentation/mdbook_asciio/src/mouse_operations.md
 documentation/mdbook_asciio/src/pen_mode.md

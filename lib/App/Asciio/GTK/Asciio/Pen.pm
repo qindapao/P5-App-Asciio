@@ -50,7 +50,7 @@ return $asciio->{PEN_STATE} ;
 
 #----------------------------------------------------------------------------------------------
 
-sub switch_show_mapping_help_location
+sub switch_key_mapping_panel_location
 {
 my ($asciio) = @_ ;
 
@@ -293,6 +293,8 @@ my ($asciio) = @_ ;
 
 $asciio->{PEN_STATE}{mouse_emulation_direction} = $asciio->{PEN_STATE}{mouse_states}{$asciio->{PEN_STATE}{mouse_emulation_direction}}{next} ;
 $asciio->{SIMULATE_MOUSE_TYPE}          = $asciio->{PEN_STATE}{mouse_states}{$asciio->{PEN_STATE}{mouse_emulation_direction}}{type} ;
+
+set_overlays_sub($asciio) ;
 $asciio->update_display() ;
 }
 
@@ -311,6 +313,8 @@ $asciio->{MOUSE_EMULATION_FIRST_COORDINATE} = undef ;
 $asciio->{SIMULATE_MOUSE_TYPE}              = $asciio->{PEN_STATE}{mouse_states}{$asciio->{PEN_STATE}{mouse_emulation_direction}}{type} ;
 $asciio->change_cursor('left_ptr') ;
 pen_enter($asciio) ;
+
+sub_mode_switch($asciio, 'draw') ;
 }
 
 #---------------------------------------------------------------------------------------------

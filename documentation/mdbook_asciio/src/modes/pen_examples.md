@@ -12,6 +12,3 @@ Stencil examples:
 
 ![pen_draw_book](pen_draw_book.gif)
 
-
-
-
