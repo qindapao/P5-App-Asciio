@@ -43,7 +43,7 @@ Pen mode provides character-by-character drawing with keyboard navigation.
 | Left tab         | «Shift+Tab»    | Move to previous tab stop           |
 | Right tab        | «Tab»          | Move to next tab stop               |
 | Enter            | «Shift+Return» | Move to beginning of next line      |
-| Toggle direction | «d»            | Change auto-movement direction      |
+| Toggle direction | «Ctrl+d»       | Change auto-movement direction      |
 
 ## Character Deletion
 

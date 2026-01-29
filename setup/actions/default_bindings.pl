@@ -576,13 +576,11 @@ TOP_LEVEL_GROUP
 	(
 	SHORTCUTS => '000-e',
 	
-	'Shrink box'                       => ['000-s',             \&App::Asciio::Actions::ElementsManipulation::shrink_box                   ],
-	'enable elements cross'            => ['000-x',             \&App::Asciio::Actions::ElementsManipulation::set_elements_crossover, 1    ],
-	'disable elements cross'           => ['00S-X',             \&App::Asciio::Actions::ElementsManipulation::set_elements_crossover, 0    ],
+	'cross ->'                         => ['000-x', USE_GROUP('cross')],
 	'attributes ->'                    => ['000-a', USE_GROUP('attributes')],
-	'element conversion ->'            => ['000-c', USE_GROUP('conversion')],
+	'element modification ->'          => ['000-m', USE_GROUP('modification')],
 	'freeze controls ->'               => ['000-f', USE_GROUP('freeze')],
-	'spellcheck ->'                    => ['00S-S', USE_GROUP('spellcheck')],
+	'spellcheck ->'                    => ['000-s', USE_GROUP('spellcheck')],
 	'change type ->'                   => ['000-t', USE_GROUP('change_type')],
 	'add connectors ->'                => ['000-o', USE_GROUP('element_add_connectors')],
 	),
@@ -591,7 +589,7 @@ TOP_LEVEL_GROUP
 		(
 		SHORTCUTS => 'group_spellcheck',
 		
-		'spellcheck' => ['00S-S', \&App::Asciio::Actions::Unsorted::spellcheck_elements],
+		'spellcheck' => ['000-s', \&App::Asciio::Actions::Unsorted::spellcheck_elements],
 		'clear'      => ['000-c', \&App::Asciio::Actions::Unsorted::clear_spellcheck],
 		),
 	
@@ -740,15 +738,24 @@ TOP_LEVEL_GROUP
 		'thaw'                             => ['000-t',             \&App::Asciio::Actions::Elements::thaw_selected_elements                   ],
 		),
 	
-	'group_conversion' => GROUP
+	'group_modification' => GROUP
 		(
-		SHORTCUTS => 'group_conversion',
+		SHORTCUTS => 'group_modification',
 		
+		'Shrink box'                       => ['000-s',             \&App::Asciio::Actions::ElementsManipulation::shrink_box                   ],
 		'Make elements Unicode'            => ['000-u',             \&App::Asciio::Actions::ElementAttributes::make_selection_unicode, 1       ],
 		'Make elements ASCII'              => ['000-a',             \&App::Asciio::Actions::ElementAttributes::make_selection_unicode, 0       ],
 		
 		'convert to a text element'        => ['000-t',             \&App::Asciio::Actions::Elements::convert_selected_elements_to_text_element],
 		'convert to dots'                  => ['000-d',             \&App::Asciio::Actions::Elements::convert_selected_elements_to_dot_elements],
+		),
+
+	'group_cross' => GROUP
+		(
+		SHORTCUTS => 'group_cross',
+		
+		'enable elements cross'            => ['000-x',             \&App::Asciio::Actions::ElementsManipulation::set_elements_crossover, 1    ],
+		'disable elements cross'           => ['000-d',             \&App::Asciio::Actions::ElementsManipulation::set_elements_crossover, 0    ],
 		),
 
 'selection ->' => GROUP

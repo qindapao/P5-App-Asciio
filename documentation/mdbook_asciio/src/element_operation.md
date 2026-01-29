@@ -8,23 +8,29 @@
 
 ## Element Modification
 
+**Prefix:** All operations require pressing `«m»` first
+
 | Operation                 | Binding   | Description                                      |
 | -----------               | --------- | -------------                                    |
 | Shrink box                | `«s»`     | Shrink box to fit content                        |
 | Make elements unicode     | `«u»`     | Convert selection to unicode style               |
-| Make elements not unicode | `«U»`     | Convert selection from unicode style             |
-| Convert to big text       | `«g»`     | Merge selected elements into single text element |
-| Convert to dots           | `«G»`     | Convert selected elements to dot characters      |
+| Make elements not unicode | `«a»`     | Convert selection from unicode style             |
+| Convert to big text       | `«t»`     | Merge selected elements into single text element |
+| Convert to dots           | `«d»`     | Convert selected elements to dot characters      |
 
 ## Freeze Thaw
 
+**Prefix:** All operations require pressing `«f»` first
+
 | Operation            | Binding   | Description                                     |
 | -----------          | --------- | -------------                                   |
-| freeze               | «f»       | freeze elements, they can't be moved or resized |
-| freeze to background | «F'»      | freese elements and move them to the background |
-| thaw                 | «t'»      | thaws the elements                              |
+| freeze               | `«f»`     | freeze elements, they can't be moved or resized |
+| freeze to background | `«b»`     | freese elements and move them to the background |
+| thaw                 | `«t»`     | thaws the elements                              |
 
 ## Element Attributes
+
+**Prefix:** All operations require pressing `«a»` first
 
 | Operation                | Binding      | Description                           |
 | -----------              | ---------    | -------------                         |
@@ -34,14 +40,16 @@
 
 ## Crossover Control
 
+**Prefix:** All operations require pressing `«x»` first
+
 | Operation              | Binding   | Description                             |
 | -----------            | --------- | -------------                           |
 | Enable elements cross  | `«x»`     | Allow elements to cross over each other |
-| Disable elements cross | `«X»`     | Prevent elements from crossing over     |
+| Disable elements cross | `«d»`     | Prevent elements from crossing over     |
 
 ## Element Type Change
 
-**Prefix:** All operations require pressing `«T»` first
+**Prefix:** All operations require pressing `«t»` first
 
 | Operation            | Binding   | 
 | -----------          | --------- | 
@@ -52,6 +60,15 @@
 | Rhombus styles       | `«r»`     | 
 | Triangle up styles   | `«u»`     | 
 | Triangle down styles | `«d»`     | 
+
+## Element Add Connectors
+
+**Prefix:** All operations require pressing `«C»` first
+
+| Operation        | Binding               |
+| -----------      | ---------             |
+| add connector    | `«mouse-left-click»`  |
+| remove connector | `«mouse-right-click»` |
 
 ## Related Groups
 
