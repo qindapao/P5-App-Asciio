@@ -409,7 +409,7 @@ if(defined $self->{SELECTION_RECTANGLE}{END_X})
 	delete $self->{SELECTION_RECTANGLE}{END_X} ;
 	}
 
-if ($self->{MOUSE_TOGGLE})
+if ($self->{MOUSE}{HIGHLIGHT})
 	{
 	$text_array->[$self->{MOUSE_Y} + 1][$self->{MOUSE_X} + 1] = ['X', color($self->get_color('mouse_rectangle'))]
 		unless($self->{MOUSE_X} < 0 || $self->{MOUSE_X} >= $COLS || $self->{MOUSE_Y} < 0 || $self->{MOUSE_Y} >= $ROWS) ;

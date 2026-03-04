@@ -15,11 +15,11 @@ Readonly my $PREFERED_DIRECTION => 'right-down' ; # or 'down-right' ;
 
 #----------------------------------------------------------------------------------------------
 
-sub toggle_mouse
+sub toggle_mouse_highlight
 {
 my ($self) = @_;
 
-$self->{MOUSE_TOGGLE} ^= 1 ;
+$self->{MOUSE}{HIGHLIGHT} ^= 1 ;
 $self->update_display() ;
 }
 

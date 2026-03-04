@@ -157,7 +157,7 @@ ROOT_GROUP
 	(
 	{ NAME => 'mouse emulation', DESCRIPTION => 'Move mouse with keyboard'},
 	
-	'Mouse emulation toggle'           => [['000-apostrophe', "'"], \&App::Asciio::Actions::Mouse::toggle_mouse                ],
+	'Mouse emulation toggle'           => [['000-apostrophe', "'"], \&App::Asciio::Actions::Mouse::toggle_mouse_highlight      ],
 	
 	'Mouse emulation left-click'       => ['000-odiaeresis',        \&App::Asciio::Actions::Mouse::mouse_left_click            ],
 	'Mouse emulation expand selection' => ['00S-Odiaeresis',        \&App::Asciio::Actions::Mouse::expand_selection            ],

@@ -151,7 +151,7 @@ $self->draw_ruler_lines            ($expose_data) if $self->{DISPLAY_RULERS} ;
 $self->draw_connections            ($expose_data) ;
 $self->draw_new_connection         ($expose_data) ;
 $self->draw_selection              ($expose_data) ;
-$self->display_mouse_cursor        ($expose_data) if $self->{MOUSE_TOGGLE} ;
+$self->display_mouse_cursor        ($expose_data) if $self->{MOUSE}{HIGHLIGHT} ;
 $self->draw_hint_lines             ($expose_data) if $self->{DRAW_HINT_LINES} ;
 $self->draw_pen_mapping_help       ($expose_data) ;
 $self->draw_element_state          ($expose_data) ;

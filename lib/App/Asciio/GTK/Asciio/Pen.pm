@@ -268,7 +268,7 @@ sub sub_mode_switch
 {
 my ($asciio, $sub_mode) = @_ ;
 
-$asciio->{MOUSE_TOGGLE} = 1 ;
+$asciio->{MOUSE}{HIGHLIGHT} = 1 ;
 $asciio->{PEN_STATE}{sub_mode} = $sub_mode ;
 
 custom_mouse_cursor($asciio) ;
@@ -326,7 +326,7 @@ sub mouse_emulation_escape
 my ($asciio) = @_ ;
 
 delete $asciio->{DRAW_MOUSE_CURSOR} ;
-$asciio->{MOUSE_TOGGLE} = 0 ;
+$asciio->{MOUSE}{HIGHLIGHT} = 0 ;
 pen_escape($asciio) ;
 }
 
